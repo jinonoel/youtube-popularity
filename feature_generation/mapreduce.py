@@ -1,26 +1,31 @@
 import pymongo
 import datetime
 import calendar
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('start_date')
+parser.add_argument('end_date')
+parser.add_argument('delta')
+args = parser.parse_args()
+
+#start_date = datetime.datetime(2014, 9, 21)
+#end_date = datetime.datetime(2014, 9, 22)
+#delta = datetime.timedelta(1)
+
+start_date = datetime.datetime.strptime(parser.start_date, '%Y-%m-%d')
+end_date = datetime.datetime.strptime(parser.end_date, '%Y-%m-%d')
+delta = datetime.timedelta(int(parser.delta))
+current_date = start_date
 
 conn = pymongo.MongoClient('localhost')
 db = conn['nicta']
 tweet_coll = db['tweet']
 
-start_date = datetime.datetime(2014, 9, 21)
-end_date = datetime.datetime(2014, 9, 22)
-current_date = start_date
-delta = datetime.timedelta(1)
-
 map_f = open('map.js').read()
 reduce_f = open('reduce.js').read()
 finalize_f = open('finalize.js').read()
 
-print map_f
-print
-print reduce_f
-print
-print finalize_f
-print
 while (current_date < end_date):
     out_name = 'features_' + str(current_date).split()[0]
     print current_date, out_name

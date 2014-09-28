@@ -18,7 +18,7 @@ def get_credentials(config_file):
 parser = argparse.ArgumentParser()
 parser.add_argument('config_file')
 
-args = parse.parse_args()
+args = parser.parse_args()
 
 credentials = get_credentials(args.config_file)
 
