@@ -13,9 +13,9 @@ args = parser.parse_args()
 #end_date = datetime.datetime(2014, 9, 22)
 #delta = datetime.timedelta(1)
 
-start_date = datetime.datetime.strptime(parser.start_date, '%Y-%m-%d')
-end_date = datetime.datetime.strptime(parser.end_date, '%Y-%m-%d')
-delta = datetime.timedelta(int(parser.delta))
+start_date = datetime.datetime.strptime(args.start_date, '%Y-%m-%d')
+end_date = datetime.datetime.strptime(args.end_date, '%Y-%m-%d')
+delta = datetime.timedelta(int(args.delta))
 current_date = start_date
 
 conn = pymongo.MongoClient('localhost')
