@@ -3,9 +3,13 @@ function() {
 	var vars = url.split('?')[1].split('&');
 	for (var i = 0; i < vars.length; i++) {
             var pair = vars[i].split('=');
-            if (decodeURIComponent(pair[0]) == 'v') {
-		return decodeURIComponent(pair[1]);
-            }
+            try {
+		if (decodeURIComponent(pair[0]) == 'v') {
+		    return decodeURIComponent(pair[1]);
+		}
+	    }
+	    catch(err) {
+	    }
 	}
 	
 	return '';

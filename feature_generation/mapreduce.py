@@ -9,10 +9,6 @@ parser.add_argument('end_date')
 parser.add_argument('delta')
 args = parser.parse_args()
 
-#start_date = datetime.datetime(2014, 9, 21)
-#end_date = datetime.datetime(2014, 9, 22)
-#delta = datetime.timedelta(1)
-
 start_date = datetime.datetime.strptime(args.start_date, '%Y-%m-%d')
 end_date = datetime.datetime.strptime(args.end_date, '%Y-%m-%d')
 delta = datetime.timedelta(int(args.delta))
@@ -43,8 +39,8 @@ while (current_date < end_date):
         finalize=finalize_f,
         query={
             'timestamp_ms' : {
-                '$gte' : str(start_ts),
-                '$lt' : str(end_ts)
+                '$gte' : start_ts,
+                '$lt' : end_ts
             }
         }
     )
