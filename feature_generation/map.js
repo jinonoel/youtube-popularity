@@ -73,7 +73,7 @@ function() {
 		has_hashtag : hasHashtag,
 		is_rt : isRT,
 		is_nbc : isNBC,
-		text : text
+		//text : text
 	    });
 
 	    emit(key, {tweets : tweets});
