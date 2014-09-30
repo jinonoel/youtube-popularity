@@ -32,23 +32,23 @@ function() {
     var urls = entities.urls;
     var text = this.text;
 
-    var hasHashtag = false;
-    var hasMention = false;
-    var isRT = false;
-    var isNBC = false;
+    var hasHashtag = 0;
+    var hasMention = 0;
+    var isRT = 0;
+    var isNBC = 0;
 
     if (typeof entities != 'undefined') {
 	if (typeof entities.user_mentions != 'undefined' && entities.user_mentions.length > 0) {
-	    hasMention = true;
-	    if (text.charAt(0) == '@') isNBC = true;
+	    hasMention = 1;
+	    if (text.charAt(0) == '@') isNBC = 1;
 	}
 
 	if (typeof entities.hashtags != 'undefined' && entities.hashtags.length > 0) {
-	    hasHashtag = true;
+	    hasHashtag = 1;
 	}
 
 	if (typeof this.retweeted_status != 'undefined' && typeof this.retweeted_status.id != 'undefined') {
-	    isRT = true;
+	    isRT = 1;
 	}
     }
     
@@ -66,17 +66,14 @@ function() {
 	}
 
 	if (key != '') {
-	    tweets.push({
-		timestamp : this.timestamp_ms, 
-		user : user,
+	    tweetData = {
 		has_mention : hasMention,
 		has_hashtag : hasHashtag,
 		is_rt : isRT,
-		is_nbc : isNBC,
-		//text : text
-	    });
+		is_nbc : isNBC
+	    };
 
-	    emit(key, {tweets : tweets});
+	    emit(key, tweetData);
         }
     }
 }

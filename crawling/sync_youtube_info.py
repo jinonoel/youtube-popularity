@@ -4,7 +4,7 @@ import datetime
 import calendar
 import pymongo
 
-sys.path.append('/Users/jnoel/YTCrawl')
+sys.path.append('/home/jnoel/YTCrawl')
 import crawler
 
 
@@ -30,16 +30,23 @@ while current_date < end_date:
     mr_name = 'features_' + str(current_date).split()[0]
  
     i = 0
-    for result in mr_name.find({}, ['_id'], timeout=False):
+    for result in db[mr_name].find({}, ['_id'], timeout=False):
         vid_id = result['_id']
 
         i += 1
         if i % 100 == 0:
-            print date, i
+            print current_date, i
 
         try:
             data = crawler.single_crawl(vid_id)
-            coll.insert(data)
+            if 'uploadDate' not in data or 'dailyViewcount' not in data:
+                continue
+            
+            coll.insert({
+                'video_id' : vid_id,
+                'uploadDate' : str(data['uploadDate']).split()[0],
+                'dailyViewCount' : data['dailyViewcount']
+            })
         except:
             print "Unexpected error:", sys.exc_info()[0]
 

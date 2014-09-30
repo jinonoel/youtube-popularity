@@ -36,7 +36,7 @@ while (current_date < end_date):
         map_f, 
         reduce_f,
         out_name,
-        finalize=finalize_f,
+        #finalize=finalize_f,
         query={
             'timestamp_ms' : {
                 '$gte' : start_ts,
