@@ -4,7 +4,8 @@ function(key, value) {
     var nbcCount = 0;
     var rtCount = 0;
     var uniqueUsers = [];
-    
+    var finalVal = {}
+
     for (var i = 0; i < value.tweets.length; i++) {
 	if (value.tweets[i].has_mention) mentionCount++;
 	if (value.tweets[i].has_hashtag) hashtagCount++;
@@ -24,12 +25,12 @@ function(key, value) {
 	}
     }
 
-    value.hashtag_count = hashtagCount;
-    value.mention_count = mentionCount;
-    value.nbc_count = nbcCount;
-    value.rt_count = rtCount;
-    value.user_count = uniqueUsers.length;
-    value.tweet_count = value.tweets.length;
+    finalVal.hashtag_count = hashtagCount;
+    finalVal.mention_count = mentionCount;
+    finalVal.nbc_count = nbcCount;
+    finalVal.rt_count = rtCount;
+    finalVal.user_count = uniqueUsers.length;
+    finalVal.tweet_count = value.tweets.length;
 
     return value;
 }
