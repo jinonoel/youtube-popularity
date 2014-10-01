@@ -23,6 +23,9 @@ conn = pymongo.MongoClient('localhost')
 db = conn['nicta']
 coll = db['videos']
 
+existing = coll.distinct('video_id')
+existing_set = set(existing)
+
 crawler = crawler.Crawler()
 
 while current_date < end_date:
@@ -32,6 +35,9 @@ while current_date < end_date:
     i = 0
     for result in db[mr_name].find({}, ['_id'], timeout=False):
         vid_id = result['_id']
+
+        if vid_id in existing_set:
+            continue
 
         i += 1
         if i % 100 == 0:
@@ -47,8 +53,13 @@ while current_date < end_date:
                 'uploadDate' : str(data['uploadDate']).split()[0],
                 'dailyViewCount' : data['dailyViewcount']
             })
+
+            existing_set.add(vid_id)
+
+        except Exception as ex:
+            print "Exception:", ex
         except:
-            print "Unexpected error:", sys.exc_info()[0]
+            print "WTF"
 
     current_date += delta
 
