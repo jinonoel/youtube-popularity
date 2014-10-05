@@ -1,3 +1,4 @@
+
 import sys
 import argparse
 import datetime
@@ -57,7 +58,7 @@ while current_date < end_date:
             existing_set.add(vid_id)
 
         except Exception as ex:
-            print "Exception:", ex
+            print "Exception:", ex, vid_id
         except:
             print "WTF"
 
