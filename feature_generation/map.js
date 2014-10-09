@@ -70,7 +70,8 @@ function() {
 		has_mention : hasMention,
 		has_hashtag : hasHashtag,
 		is_rt : isRT,
-		is_nbc : isNBC
+		is_nbc : isNBC,
+                tweet_count : 1
 	    };
 
 	    emit(key, tweetData);

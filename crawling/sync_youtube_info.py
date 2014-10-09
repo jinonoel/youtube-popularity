@@ -25,7 +25,11 @@ db = conn['nicta']
 coll = db['videos']
 
 existing = coll.distinct('video_id')
+existing.extend(db['statics_disabled'].distinct('video_id'))
+
 existing_set = set(existing)
+
+print "Existing:", len(existing_set)
 
 crawler = crawler.Crawler()
 
@@ -58,7 +62,11 @@ while current_date < end_date:
             existing_set.add(vid_id)
 
         except Exception as ex:
-            print "Exception:", ex, vid_id
+            if 'statistics disabled' in str(ex):
+                db['statics_disabled'].insert({'video_id' : vid_id})
+                existing_set.add(vid_id)
+            else:
+                print "Exception:", ex, vid_id
         except:
             print "WTF"
 

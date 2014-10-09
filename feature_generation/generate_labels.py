@@ -3,12 +3,15 @@ import argparse
 import datetime
 import pymongo
 
-parser.argparse.ArgumentParse()
+parser = argparse.ArgumentParser()
 parser.add_argument('start_date')
+parser.add_argument('mid_date')
 parser.add_argument('end_date')
+parser.add_argument('output_file')
 args = parser.parse_args()
 
 start_date = args.start_date
+mid_date = datetime.datetime.strptime(args.mid_date, '%Y-%m-%d')
 end_date = datetime.datetime.strptime(args.end_date, '%Y-%m-%d')
 
 conn = pymongo.MongoClient('localhost')
@@ -19,38 +22,67 @@ coll = db['videos']
 #output.remove()
 
 video_views = {}
-total_all_videos = 0
+video_mid_views = {}
 
 i = 0
 for result in coll.find({'uploadDate' : {'$gte' : start_date}}):
     i += 1
     if i % 100 == 0:
-        print i, len(video_views)
+        print i, len(video_views), len(daily_counts)
 
     upload_date = datetime.datetime.strptime(result['uploadDate'], '%Y-%m-%d')
-    days = (upload_date - end_date).days 
+    if upload_date > mid_date:
+        continue
+
+    days = (end_date - upload_date).days 
+    if days < 0:
+        continue
+
     daily_counts = result['dailyViewCount']
 
     total_views = 0
-    for i range(0, days + 1):
-        if i >= len(daily_counts):
-            total_views += daily_counts[i]
+
+    for j in range(0, days + 1):
+        if j < len(daily_counts):
+            total_views += daily_counts[j]
 
     if total_views == 0:
         continue
 
     video_views[result['video_id']] = total_views
-    total_all_videos += total_views
+    
+    mid_days = (mid_date - upload_date).days
+    if mid_days < 0:
+        continue
 
-    if len(video_views) >= 1000:
-        break
+    mid_views = 0
+    for j in range(0, mid_days+1):
+        if j < len(daily_counts):
+            mid_views += daily_counts[j]
+
+    video_mid_views[result['video_id']] = mid_views
 
 print 'Videos:', len(video_views)
-print 'Total:', total_all_videos
-print 'Average:', float(total_all_videos) / len(video_views)
 
-sorted_vids = sorted(video_views, key=video_views.__getitem__)
+sorted_mid_views = sorted(video_views, key=video_views.__getitem__, reverse=True)
+filter_videos = set()
+for j in range(int(len(sorted_mid_views) * 0.1)):
+    filter_videos.add(sorted_mid_views[j])
+
+sorted_vids = sorted(video_views, key=video_views.__getitem__, reverse=True)
+positive_count = int(len(video_views) * 0.05)
+j = 0
+
+output = open('video_labels.csv', 'w')
 
 for vid in sorted_vids:
-    print vid, video_views[vid]
+    if vid in filter_videos:
+        continue
 
+    if (j < positive_count):
+        output.write(vid + ",1," + str(video_views[vid]) + "\n")
+        j += 1
+    else:
+        output.write(vid + ",0," + str(video_views[vid]) + "\n")
+
+output.close()

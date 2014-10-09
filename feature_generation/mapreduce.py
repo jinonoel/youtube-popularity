@@ -23,7 +23,7 @@ reduce_f = open('reduce.js').read()
 finalize_f = open('finalize.js').read()
 
 while (current_date < end_date):
-    out_name = 'features_' + str(current_date).split()[0]
+    out_name = '5day_features_' + str(current_date).split()[0]
     print current_date, out_name
 
     start_ts = calendar.timegm(current_date.utctimetuple()) * 1000
@@ -36,7 +36,6 @@ while (current_date < end_date):
         map_f, 
         reduce_f,
         out_name,
-        #finalize=finalize_f,
         query={
             'timestamp_ms' : {
                 '$gte' : start_ts,
