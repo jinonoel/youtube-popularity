@@ -4,13 +4,14 @@ import datetime
 import pymongo
 
 parser = argparse.ArgumentParser()
+parser.add_argument('collection')
 parser.add_argument('label_file')
 parser.add_argument('output_file')
 args = parser.parse_args()
 
 conn = pymongo.MongoClient('localhost')
 db = conn['nicta']
-feature_coll = db['5day_features_2014-09-27']
+feature_coll = db[args.collection]
 
 video_features = {}
 

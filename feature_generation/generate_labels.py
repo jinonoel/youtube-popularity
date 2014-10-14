@@ -64,11 +64,6 @@ for result in coll.find({'uploadDate' : {'$gte' : start_date}}):
 
 print 'Videos:', len(video_views)
 
-sorted_mid_views = sorted(video_views, key=video_views.__getitem__, reverse=True)
-filter_videos = set()
-for j in range(int(len(sorted_mid_views) * 0.1)):
-    filter_videos.add(sorted_mid_views[j])
-
 sorted_vids = sorted(video_views, key=video_views.__getitem__, reverse=True)
 positive_count = int(len(video_views) * 0.05)
 j = 0
@@ -76,9 +71,6 @@ j = 0
 output = open('video_labels.csv', 'w')
 
 for vid in sorted_vids:
-    if vid in filter_videos:
-        continue
-
     if (j < positive_count):
         output.write(vid + ",1," + str(video_views[vid]) + "\n")
         j += 1
