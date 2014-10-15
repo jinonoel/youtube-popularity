@@ -52,7 +52,7 @@ for result in coll.find({'uploadDate' : {'$gte' : start_date}}):
     video_views[result['video_id']] = total_views
     
     mid_days = (mid_date - upload_date).days
-    if mid_days < 0:
+    if mid_days < 0 or len(daily_counts) < mid_days:
         continue
 
     mid_views = 0
@@ -68,7 +68,7 @@ sorted_vids = sorted(video_views, key=video_views.__getitem__, reverse=True)
 positive_count = int(len(video_views) * 0.05)
 j = 0
 
-output = open('video_labels.csv', 'w')
+output = open(args.output_file, 'w')
 
 for vid in sorted_vids:
     if (j < positive_count):

@@ -24,8 +24,19 @@ conn = pymongo.MongoClient('localhost')
 db = conn['nicta']
 coll = db['videos']
 
-existing = coll.distinct('video_id')
-existing.extend(db['statics_disabled'].distinct('video_id'))
+#existing = coll.distinct('video_id')
+existing = []
+
+print "Getting existing"
+for vid in coll.find():
+    existing.append(vid['video_id'])
+
+print "Getting disabled"
+
+for vid in db['statics_disabled'].find():
+    existing.append(vid['video_id'])
+
+#existing.extend(db['statics_disabled'].distinct('video_id'))
 
 existing_set = set(existing)
 
