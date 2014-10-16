@@ -22,7 +22,6 @@ coll = db['videos']
 #output.remove()
 
 video_views = {}
-video_mid_views = {}
 
 i = 0
 for result in coll.find({'uploadDate' : {'$gte' : start_date}}):
@@ -46,21 +45,19 @@ for result in coll.find({'uploadDate' : {'$gte' : start_date}}):
         if j < len(daily_counts):
             total_views += daily_counts[j]
 
-    if total_views == 0:
+    mid_days = (mid_date - upload_date).days
+
+    #Skip if:
+    #Total views = 0 for some reason
+    #Video uploaded after A days
+    #Video has no video views after A days (database not updated)
+
+    if total_views == 0 or mid_days < 0 or len(daily_counts) < mid_days:
         continue
 
     video_views[result['video_id']] = total_views
     
-    mid_days = (mid_date - upload_date).days
-    if mid_days < 0 or len(daily_counts) < mid_days:
-        continue
 
-    mid_views = 0
-    for j in range(0, mid_days+1):
-        if j < len(daily_counts):
-            mid_views += daily_counts[j]
-
-    video_mid_views[result['video_id']] = mid_views
 
 print 'Videos:', len(video_views)
 

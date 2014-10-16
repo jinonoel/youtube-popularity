@@ -3,7 +3,7 @@ import argparse
 import sys
 import math
 
-sys.path.append('/home/jnoel/liblinear-1.94/python')
+sys.path.append('/Users/jino/Code/liblinear-1.94/python')
 import liblinearutil
 
 #C_RANGE = [
@@ -38,7 +38,6 @@ C_RANGE = [
     2e3,
     2e5,
     2e7,
-    2e9,
     2e9,
     2e11,
     2e13,
@@ -122,6 +121,7 @@ def predict(test_data, features, model):
     p_label, p_acc, p_val = liblinearutil.predict(y, x, model, '-q')
     
     predictions = {}
+    reverse = False
     for i in range(len(p_label)):
         predictions[keys[i]] = {
             'class' : p_label[i],
@@ -129,15 +129,17 @@ def predict(test_data, features, model):
         }
 
         if (p_label[i] > 0 and p_val[i][0] > 0):
-            print p_label[i], p_val[i][0]
-            print 'ERROR'
-            sys.exit()
+            reverse = True
 
         if (p_label[i] <= 0 and p_val[i][0] < 0):
-            print p_label[i], p_val[i][0]
-            print 'wtf'
-            sys.exit()
+            reverse = True
             
+    if reverse:
+        print 'REVERSING SCORE!'
+
+        for key in predictions:
+            predictions[key]['score'] *= -1
+
     return predictions
 
 def get_best_c(data, features):
