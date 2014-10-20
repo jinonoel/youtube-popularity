@@ -2,6 +2,7 @@ import random
 import argparse
 import sys
 import math
+import pymongo
 
 sys.path.append('/Users/jino/Code/liblinear-1.94/python')
 import liblinearutil
@@ -32,7 +33,7 @@ C_RANGE = [
     2e-7,
     2e-5,
     2e-3,
-    2e1,
+    2e-1,
     2e0,
     2e1,
     2e3,
@@ -128,10 +129,10 @@ def predict(test_data, features, model):
             'score' : p_val[i][0]
         }
 
-        if (p_label[i] > 0 and p_val[i][0] > 0):
+        if (p_label[i] <= 0 and p_val[i][0] > 0):
             reverse = True
 
-        if (p_label[i] <= 0 and p_val[i][0] < 0):
+        if (p_label[i] > 0 and p_val[i][0] < 0):
             reverse = True
             
     if reverse:
@@ -241,7 +242,8 @@ def normalize_test(test_data, features, feature_mean, feature_std):
     normalized_features = {}
 
     for vid_id in features:
-        if vid_id not in train_data:
+        if vid_id not in test_data:
+            #print 'WHAT'
             continue
 
         feat = features[vid_id]
@@ -255,12 +257,9 @@ def normalize_test(test_data, features, feature_mean, feature_std):
 
     return normalized_features
 
-def evaluate_auc(predictions, actual):
-    return 0
-
 def evaluate_pr100(predictions, actual):
-    #assume neg score counts as a positive label (assert checks above)
-    sorted_preds = sorted(predictions.keys(), key=lambda vid: predictions[vid]['score'])
+    #assume pos score counts as a positive label (assert checks above)
+    sorted_preds = sorted(predictions.keys(), key=lambda vid: predictions[vid]['score'], reverse=True)
 
     correct = 0
     for i in range(100):
@@ -294,6 +293,93 @@ def evaluate_aprf(predictions, actual):
     return (float(tp + tn) / float(tp + fp + tn + fn)), tp, tn, fp, fn
 
 
+
+def cross_validate(data, features):
+    print 'Getting folds'
+    folds = get_folds(data)
+
+    average_acc = 0
+    average_pr100 = 0
+    for i in range(5):
+        print 'Fold', (i+1)
+        
+        train_data = {}
+        for j in range(5):
+            if i == j:
+                continue
+
+            train_data.update(folds[j])
+        continue
+
+        test_data = folds[i]
+
+        print "Normalize"
+        normalized_train_features, mean, std = normalize_train(train_data, features)
+        normalized_test_features = normalize_test(test_data, features, mean, std)
+
+        print "Tune"
+        best_c = get_best_c(train_data, normalized_train_features)
+
+        print "Train"
+        model = train(train_data, normalized_train_features, best_c)
+
+        print "Predict"
+        predictions = predict(test_data, normalized_test_features, model)
+
+        print "Evaluate"
+        score = evaluate_aprf(predictions, test_data)
+        pr100 = evaluate_pr100(predictions, test_data)
+        accr = score[0]
+
+        #print score[1], score[2], score[3], score[4]
+        print "Accuracy:", accr
+        print "Pr@100:", pr100
+        print
+
+        average_acc += accr
+        average_pr100 += pr100
+
+    print "Average Accuracy:", average_acc / 5
+    print "Average Pr@100:", average_pr100 / 5
+
+
+def insert_predictions(data, features):
+    folds = get_folds(data)
+    test_data = folds[0]
+    train_data = {}
+    train_data.update(folds[1])
+    train_data.update(folds[2])
+    train_data.update(folds[3])
+    train_data.update(folds[4])
+
+    print "Normalize"
+    normalized_train_features, mean, std = normalize_train(train_data, features)
+    normalized_test_features = normalize_test(test_data, features, mean, std)
+
+    print "Tune"
+    best_c = get_best_c(train_data, normalized_train_features)
+    
+    print "Train"
+    model = train(train_data, normalized_train_features, best_c)
+
+    print "Predict"
+    predictions = predict(test_data, normalized_test_features, model)
+
+    print "Insert"
+    conn = pymongo.MongoClient('localhost')
+    db = conn['nicta']
+    coll = db['predictions']
+
+    for vid_id in predictions:
+        coll.insert({
+            'id' : vid_id,
+            'score' : predictions[vid_id]['score'],
+            'actual' : test_data[vid_id]
+        })
+
+    conn.close()
+    print "Done"
+
 parser = argparse.ArgumentParser()
 parser.add_argument('data_file')
 parser.add_argument('feature_file')
@@ -302,49 +388,5 @@ args = parser.parse_args()
 data = read_data(args.data_file)
 features = read_features(args.feature_file)
 
-print 'Getting folds'
-folds = get_folds(data)
-
-average_acc = 0
-average_pr100 = 0
-for i in range(5):
-    print 'Fold', (i+1)
-
-    train_data = {}
-    for j in range(5):
-        if i == j:
-            next
-        
-        train_data.update(folds[j])
-
-    test_data = folds[i]
-
-    print "Normalize"
-    normalized_train_features, mean, std = normalize_train(train_data, features)
-    normalized_test_features = normalize_test(test_data, features, mean, std)
-
-    print "Tune"
-    best_c = get_best_c(train_data, normalized_train_features)
-
-
-    print "Train"
-    model = train(train_data, normalized_train_features, best_c)
-
-    print "Predict"
-    predictions = predict(test_data, normalized_test_features, model)
-
-    print "Evaluate"
-    score = evaluate_aprf(predictions, test_data)
-    pr100 = evaluate_pr100(predictions, test_data)
-    accr = score[0]
-
-    #print score[1], score[2], score[3], score[4]
-    print "Accuracy:", accr
-    print "Pr@100:", pr100
-    print
-
-    average_acc += accr
-    average_pr100 += pr100
-
-print "Average Accuracy:", average_acc / 5
-print "Average Pr@100:", average_pr100 / 5
+#cross_validate(data, features)
+insert_predictions(data, features)

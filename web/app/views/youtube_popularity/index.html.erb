@@ -1,7 +1,58 @@
 
 
-<form action="youtube_popularity/doAction" method="get">
-  <input type="text" name="start_date">
+<form id="yt_form" action="youtube_popularity/doAction" method="get">
+  <input type="text" id="start_date" name="start_date">
 
-  <input type="submit">
+  <input id="submit_btn" type="button" value="Submit">
+  <input id="clear_btn" type="button" value="Clear">
 </form>
+
+<table id="video_table">
+  <tr>
+    <th>Video</th>
+    <th>Score</th>
+    <th>Actual</th>
+  </tr>
+</table>
+
+<script language="javascript">
+  $(document).ready(function() {
+    $('#clear_btn').on('click', function() {
+      clear_videos();
+    });
+
+    $('#submit_btn').on('click', function() {
+      jQuery.ajax({
+        url : 'youtube_popularity/doAction',
+        data : {
+          start_date : $('#start_date').val()
+        },
+        error : function() {
+            alert('error!');
+        },
+        success : function(response) {
+            clear_videos();
+            show_videos(response.top_videos);
+        }
+      });
+    });
+  });
+
+  function clear_videos()
+  {
+    $('.data_row').remove();
+  }
+
+  function show_videos(top_videos)
+  {
+    for (var i = 0; i < top_videos.length; i++) {
+      $('#video_table tr:last').after(
+        '<tr class=\'data_row\'>'
+	+ '<td>' + top_videos[i].vid_id + '</td>'
+	+ '<td>' + top_videos[i].score + '</td>'
+	+ '<td>' + top_videos[i].actual + '</td>'
+        + '</tr>'
+      );
+    }
+  }
+</script>
