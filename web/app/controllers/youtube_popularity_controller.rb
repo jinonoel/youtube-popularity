@@ -19,7 +19,9 @@ class YoutubePopularityController < ApplicationController
       top_videos << {
         'vid_id' => result['id'],
         'score' => result['score'],
-        'actual' => result['actual']
+        'actual' => result['actual'],
+        'upload_date' => result['upload_date'],
+        'view_sum' => result['view_sum']
       }
     end
 

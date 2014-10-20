@@ -10,6 +10,8 @@
 <table id="video_table">
   <tr>
     <th>Video</th>
+    <th>Upload Date</th>
+    <th>View Sum</th>
     <th>Score</th>
     <th>Actual</th>
   </tr>
@@ -49,6 +51,8 @@
       $('#video_table tr:last').after(
         '<tr class=\'data_row\'>'
 	+ '<td>' + top_videos[i].vid_id + '</td>'
+        + '<td>' + top_videos[i].upload_date + '</td>'
+        + '<td>' + top_videos[i].view_sum + '</td>'
 	+ '<td>' + top_videos[i].score + '</td>'
 	+ '<td>' + top_videos[i].actual + '</td>'
         + '</tr>'
