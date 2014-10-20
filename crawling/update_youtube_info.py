@@ -1,5 +1,6 @@
 import pymongo
 import sys
+import datetime
 
 sys.append('/Users/jnoel/YTCrawl')
 import crawler
@@ -11,24 +12,39 @@ db = conn['nicta']
 coll = db['videos']
 
 i = 0
-for resulr in coll.find({'uploadDate' : {'$gte' : start_date}}, timeout=False):
-    vid_id = result['_id']
 
+last_updated = {}
+
+print "Get last updated"
+for result in coll.find({'uploadDate' : {'$gte' : start_date}}, timeout=False):
     i += 1
     if i % 1000 == 0:
-        print date, i
+        print i
+
+
+    vid_id = result['_id']
+    upload_date = datetime.datetime.strptime(result['uploadDate'])
+    days_delta = datetime.timedelta(len(result['dailyViewCount']))
+    last_update = str(upload_date + days_delta).split(0)
+
+
+    last_updated[vid_id] = {
+        'upload_date' : upload_date,
+        'last_update' : last_update
+    }
+
+
+sorted_vids = sorted(last_updated.keys(), key=lambda vid: last_updated[vid]['last_update'])
+
+for vid_id in sorted_vids:
+    print vid_id, last_updated[vid_id]['upload_date'], last_updated[vid_id]['last_update']
 
     try:
         data = crawler.single_crawl(vid_id)
-        uploadDate = str(data['uploadDate']).split()[0]
+        if 'uploadDate' not in data or 'dailyViewcount' not in data:
+            continue
 
-        if uploadDate < start_date:
-            print 'wtf date', vid_id
-            sys.exit()
-        
-        if len(data['dailyViewCount']) == 0:
-            print 'wtf view count'
-            sys.exit()
+        uploadDate = str(data['uploadDate']).split()[0]
 
         coll.update({
             'video_id' : vid_id

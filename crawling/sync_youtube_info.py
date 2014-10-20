@@ -12,7 +12,6 @@ import crawler
 parser = argparse.ArgumentParser()
 parser.add_argument('start_date')
 parser.add_argument('end_date')
-parser.add_argument('delta')
 args = parser.parse_args()
 
 start_date = args.start_date
@@ -60,11 +59,16 @@ for result in db[mr_name].find({}, ['_id'], timeout=False):
         if 'uploadDate' not in data or 'dailyViewcount' not in data:
             continue
             
-        coll.insert({
-            'video_id' : vid_id,
-            'uploadDate' : str(data['uploadDate']).split()[0],
-            'dailyViewCount' : data['dailyViewcount']
-        })
+        upload_date = str(data['uploadDate']).split()[0]
+
+        if upload_date >= '2014-09-27':
+            coll.insert({
+                'video_id' : vid_id,
+                'uploadDate' : str(data['uploadDate']).split()[0],
+                'dailyViewCount' : data['dailyViewcount']
+            })
+        else:
+            db['statics_disabled'].insert({'video_id' : vid_id})
 
         existing_set.add(vid_id)
 

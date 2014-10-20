@@ -7,24 +7,6 @@ import pymongo
 sys.path.append('/Users/jino/Code/liblinear-1.94/python')
 import liblinearutil
 
-#C_RANGE = [
-#    0.0000001,
-#    0.000001, 
-#    0.00001, 
-#    .0001, 
-#    0.001, 
-#    0.01, 
-#    0.1, 
-#    0.5, 
-#    1, 
- #   2, 
-#    10,
-#    100,
-#    1000,
-#    10000,
-#    100000
-#]
-
 C_RANGE = [
     2e-15,
     2e-13,
@@ -368,19 +350,39 @@ def insert_predictions(data, features):
     print "Insert"
     conn = pymongo.MongoClient('localhost')
     db = conn['nicta']
-    coll = db['predictions']
+    pred_coll = db['predictions']
+    vid_coll = db['videos']
+
+    video_features = {}
+
+    for vid in video_coll.find({'uploadDate' : {'$gte' : '2014-09-27'}}, timeout=False):
+        if vid['video_id'] in predictions:
+            view_sum = 0
+            for val in vid['dailyViewCount']:
+                view_sum += val
+
+            video_features[vid['video_id']] = {
+                'upload_date': vid['uploadDate']
+                'view_sum' : view_sum
+            }
+
+            if len(video_features) == len(predictions):
+                break
 
     for vid_id in predictions:
-        coll.insert({
+        pred_coll.insert({
             'id' : vid_id,
             'score' : predictions[vid_id]['score'],
-            'actual' : test_data[vid_id]
+            'actual' : test_data[vid_id],
+            'upload_date' : video_features[vid_id]['upload_date'],
+            'view_sum' : video_features[vid_id]['view_sum']
         })
 
     conn.close()
     print "Done"
 
 parser = argparse.ArgumentParser()
+parser.add_argument('action')
 parser.add_argument('data_file')
 parser.add_argument('feature_file')
 args = parser.parse_args()
@@ -388,5 +390,7 @@ args = parser.parse_args()
 data = read_data(args.data_file)
 features = read_features(args.feature_file)
 
-#cross_validate(data, features)
-insert_predictions(data, features)
+if args.action == 'cross_validate':
+    cross_validate(data, features)
+elif args.action == 'insert':
+    insert_predictions(data, features)
