@@ -291,7 +291,6 @@ def cross_validate(data, features):
                 continue
 
             train_data.update(folds[j])
-        continue
 
         test_data = folds[i]
 

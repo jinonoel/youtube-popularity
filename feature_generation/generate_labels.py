@@ -8,6 +8,7 @@ parser.add_argument('start_date')
 parser.add_argument('A')
 parser.add_argument('B')
 parser.add_argument('output_file')
+parser.add_argument('baseline_file')
 args = parser.parse_args()
 
 start_date = args.start_date
@@ -34,12 +35,17 @@ for result in coll.find({'uploadDate' : {'$gte' : start_date}}):
         continue
 
     total_views = 0
+    baseline_views = 0
+
+    for j in range(A_days):
+        baseline_views += daily_counts[j]
 
     for j in range(B_days):
         total_views += daily_counts[j]
 
     video_views[result['video_id']] = {
         'views' : total_views,
+        'baselineViews' : baseline_views,
         'uploadDate' : upload_date
     }
 
@@ -50,12 +56,18 @@ positive_count = int(len(video_views) * 0.05)
 j = 0
 
 output = open(args.output_file, 'w')
+baseline_file = open(args.baseline_file, 'w')
 
 for vid in sorted_vids:
     if (j < positive_count):
-        output.write(vid + ",1," + str(video_views[vid]['score']) + "," + videos_views[vid]['uploadDate'] + "\n")
+        output.write(vid + ",1," + str(video_views[vid]['views']) + "," + videos_views[vid]['uploadDate'] + "\n")
         j += 1
     else:
-        output.write(vid + ",0," + str(video_views[vid]['score']) + "," + video_views[vid]['uploadDate'] + "\n")
+        output.write(vid + ",0," + str(video_views[vid]['views']) + "," + video_views[vid]['uploadDate'] + "\n")
+
+    baseline_file.write(vid + "," + str(video_views[vid]['baselineViews']) + "\n")
 
 output.close()
+baseline_file.close()
+
+
