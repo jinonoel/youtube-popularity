@@ -5,21 +5,19 @@ import pymongo
 
 parser = argparse.ArgumentParser()
 parser.add_argument('start_date')
-parser.add_argument('mid_date')
-parser.add_argument('end_date')
+parser.add_argument('A')
+parser.add_argument('B')
 parser.add_argument('output_file')
 args = parser.parse_args()
 
 start_date = args.start_date
-mid_date = datetime.datetime.strptime(args.mid_date, '%Y-%m-%d')
-end_date = datetime.datetime.strptime(args.end_date, '%Y-%m-%d')
+A_days = int(args.A)
+B_days = int(args.B)
 
 conn = pymongo.MongoClient('localhost')
 db = conn['nicta']
 coll = db['videos']
 
-#output = db['total_views']
-#output.remove()
 
 video_views = {}
 
@@ -29,39 +27,25 @@ for result in coll.find({'uploadDate' : {'$gte' : start_date}}):
     if i % 100 == 0:
         print i, len(video_views), len(daily_counts)
 
-    upload_date = datetime.datetime.strptime(result['uploadDate'], '%Y-%m-%d')
-    if upload_date > mid_date:
-        continue
-
-    days = (end_date - upload_date).days 
-    if days < 0:
-        continue
-
+    upload_date = result['uploadDate']
     daily_counts = result['dailyViewCount']
+
+    if len(daily_counts) < B_days:
+        continue
 
     total_views = 0
 
-    for j in range(0, days + 1):
-        if j < len(daily_counts):
-            total_views += daily_counts[j]
+    for j in range(B_days):
+        total_views += daily_counts[j]
 
-    mid_days = (mid_date - upload_date).days
-
-    #Skip if:
-    #Total views = 0 for some reason
-    #Video uploaded after A days
-    #Video has no video views after A days (database not updated)
-
-    if total_views == 0 or mid_days < 0 or len(daily_counts) < mid_days:
-        continue
-
-    video_views[result['video_id']] = total_views
-    
-
+    video_views[result['video_id']] = {
+        'views' : total_views,
+        'uploadDate' : upload_date
+    }
 
 print 'Videos:', len(video_views)
 
-sorted_vids = sorted(video_views, key=video_views.__getitem__, reverse=True)
+sorted_vids = sorted(video_views, key=lambda vid: video_views[vid]['views'], reverse=True)
 positive_count = int(len(video_views) * 0.05)
 j = 0
 
@@ -69,9 +53,9 @@ output = open(args.output_file, 'w')
 
 for vid in sorted_vids:
     if (j < positive_count):
-        output.write(vid + ",1," + str(video_views[vid]) + "\n")
+        output.write(vid + ",1," + str(video_views[vid]['score']) + "," + videos_views[vid]['uploadDate'] + "\n")
         j += 1
     else:
-        output.write(vid + ",0," + str(video_views[vid]) + "\n")
+        output.write(vid + ",0," + str(video_views[vid]['score']) + "," + video_views[vid]['uploadDate'] + "\n")
 
 output.close()
