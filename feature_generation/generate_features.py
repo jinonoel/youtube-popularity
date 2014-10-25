@@ -32,7 +32,7 @@ while current_date <= end_date:
     print current_date_str
 
     coll_name = 'features_' + current_date_str
-    feature_coll = db[args.collection]
+    feature_coll = db[coll_name]
 
     i = 0
     written = 0
@@ -58,4 +58,5 @@ while current_date <= end_date:
         written += 1
         output.write(vid_id + ',' + str(has_mention) + ',' + str(has_hashtag) + ',' + str(is_rt) + ',' + str(is_nbc) + ',' + str(tweet_count) + '\n')
 
+    current_date += delta
 output.close()

@@ -23,15 +23,21 @@ coll = db['videos']
 video_views = {}
 
 i = 0
+less = 0
 for result in coll.find({'uploadDate' : {'$gte' : start_date}}):
     i += 1
     if i % 100 == 0:
-        print i, len(video_views), len(daily_counts)
+        print i, len(video_views), len(daily_counts), less
 
+    vid_id = result['video_id'].split('#')[0]
+    if vid_id in video_views:
+        continue
+    
     upload_date = result['uploadDate']
     daily_counts = result['dailyViewCount']
 
     if len(daily_counts) < B_days:
+        less += 1
         continue
 
     total_views = 0
@@ -43,7 +49,7 @@ for result in coll.find({'uploadDate' : {'$gte' : start_date}}):
     for j in range(B_days):
         total_views += daily_counts[j]
 
-    video_views[result['video_id']] = {
+    video_views[vid_id] = {
         'views' : total_views,
         'baselineViews' : baseline_views,
         'uploadDate' : upload_date
@@ -60,7 +66,7 @@ baseline_file = open(args.baseline_file, 'w')
 
 for vid in sorted_vids:
     if (j < positive_count):
-        output.write(vid + ",1," + str(video_views[vid]['views']) + "," + videos_views[vid]['uploadDate'] + "\n")
+        output.write(vid + ",1," + str(video_views[vid]['views']) + "," + video_views[vid]['uploadDate'] + "\n")
         j += 1
     else:
         output.write(vid + ",0," + str(video_views[vid]['views']) + "," + video_views[vid]['uploadDate'] + "\n")

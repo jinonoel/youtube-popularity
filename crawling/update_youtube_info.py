@@ -2,7 +2,7 @@ import pymongo
 import sys
 import datetime
 
-sys.append('/Users/jnoel/YTCrawl')
+sys.path.append('/home/jnoel/YTCrawl')
 import crawler
 
 start_date = '2014-09-27'
@@ -23,9 +23,9 @@ for result in coll.find({'uploadDate' : {'$gte' : start_date}}, timeout=False):
 
 
     vid_id = result['_id']
-    upload_date = datetime.datetime.strptime(result['uploadDate'])
+    upload_date = datetime.datetime.strptime(result['uploadDate'], '%Y-%m-%d')
     days_delta = datetime.timedelta(len(result['dailyViewCount']))
-    last_update = str(upload_date + days_delta).split(0)
+    last_update = str(upload_date + days_delta).split()[0]
 
 
     last_updated[vid_id] = {
@@ -35,6 +35,8 @@ for result in coll.find({'uploadDate' : {'$gte' : start_date}}, timeout=False):
 
 
 sorted_vids = sorted(last_updated.keys(), key=lambda vid: last_updated[vid]['last_update'])
+
+crawler = crawler.Crawler()
 
 for vid_id in sorted_vids:
     print vid_id, last_updated[vid_id]['upload_date'], last_updated[vid_id]['last_update']
