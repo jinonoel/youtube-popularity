@@ -14,7 +14,7 @@ conn = pymongo.MongoClient('localhost')
 db = conn['nicta']
 
 current_date = datetime.datetime.strptime(args.start_date, '%Y-%m-%d')
-end_date = datetime.datetime.strptime(args.start_date, '%Y-%m-%d')
+end_date = datetime.datetime.strptime(args.end_date, '%Y-%m-%d')
 delta = datetime.timedelta(1)
 
 video_features = {}
@@ -59,4 +59,5 @@ while current_date <= end_date:
         output.write(vid_id + ',' + str(has_mention) + ',' + str(has_hashtag) + ',' + str(is_rt) + ',' + str(is_nbc) + ',' + str(tweet_count) + '\n')
 
     current_date += delta
+    #print "next:", current_date
 output.close()

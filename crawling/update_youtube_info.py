@@ -22,7 +22,10 @@ for result in coll.find({'uploadDate' : {'$gte' : start_date}}, timeout=False):
         print i
 
 
-    vid_id = result['_id']
+    vid_id = result['video_id'].split('#')[0]
+    if vid_id in last_updated:
+        continue
+
     upload_date = datetime.datetime.strptime(result['uploadDate'], '%Y-%m-%d')
     days_delta = datetime.timedelta(len(result['dailyViewCount']))
     last_update = str(upload_date + days_delta).split()[0]
@@ -52,7 +55,7 @@ for vid_id in sorted_vids:
             'video_id' : vid_id
         }, {
             'uploadDate' : uploadDate,
-            'dailyViewCount' : data['dailyViewCount']
+            'dailyViewCount' : data['dailyViewcount']
         })
     except Exception as ex:
         print "Exception:", ex, vid_id
