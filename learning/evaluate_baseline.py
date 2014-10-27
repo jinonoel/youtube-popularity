@@ -15,17 +15,16 @@ def predict_baseline(test_data, test_features):
 
     for vid in test_data:
         predictions[vid] = {
-            'class': 1,
+            'class': 0,
             'score' : test_features[vid][0]
         }
 
     return predictions
 
-def cross_validate(data, features):
+def cross_validate(data, test_features):
     print 'Getting folds'
-    folds = get_folds(data)
+    folds = evaluate.get_folds(data)
 
-    average_acc = 0
     average_pr100 = 0
     for i in range(5):
         print 'Fold', (i+1)
@@ -36,17 +35,29 @@ def cross_validate(data, features):
         predictions = predict_baseline(test_data, test_features)
 
         print "Evaluate"
-        score = evaluate_aprf(predictions, test_data)
-        pr100 = evaluate_pr100(predictions, test_data)
-        accr = score[0]
+        pr100 = evaluate.evaluate_pr100(predictions, test_data)
 
-        #print score[1], score[2], score[3], score[4]
-        print "Accuracy:", accr
         print "Pr@100:", pr100
         print
 
-        average_acc += accr
         average_pr100 += pr100
 
-    print "Average Accuracy:", average_acc / 5
     print "Average Pr@100:", average_pr100 / 5
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('data_file')
+    parser.add_argument('feature_file')
+    args = parser.parse_args()
+
+    data = evaluate.read_data(args.data_file)
+    features = evaluate.read_features(args.feature_file)
+
+    remove = set()
+    for key in data:
+        if key not in features:
+            remove.add(key)
+    for r in remove:
+        del data[r]
+
+    cross_validate(data, features)

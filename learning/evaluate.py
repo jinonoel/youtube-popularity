@@ -31,7 +31,7 @@ C_RANGE = [
 
 random.seed(1)
 
-def read_features(filename):
+def read_features(filename, baseline_file = False):
     feature_map = {}
 
     for line in open(filename):
@@ -43,6 +43,14 @@ def read_features(filename):
 
         feature_map[tokens[0]] = feature
 
+    if baseline_file:
+        for line in open(baseline_file):
+            tokens = line.strip().split(',')
+            vid_id = tokens[0]
+            views = tokens[1]
+            if vid_id in feature_map:
+                feature_map[vid_id].append(int(views))
+
     return feature_map
 
 
@@ -51,7 +59,11 @@ def read_data(filename):
 
     for line in open(filename):
         tokens = line.strip().split(',')
-        data[tokens[0]] = int(tokens[1])
+        data[tokens[0]] = {
+            'class' : int(tokens[1]),
+            'views' : int(tokens[2]),
+            'upload_date' : tokens[3]
+        }
 
     return data
 
@@ -83,7 +95,7 @@ def train(train_data, features, c):
     y = []
 
     for key in train_data:
-        y.append(train_data[key])
+        y.append(train_data[key]['class'])
         x.append(features[key])
 
     prob = liblinearutil.problem(y, x)
@@ -98,7 +110,8 @@ def predict(test_data, features, model):
 
     keys = test_data.keys()
     for key in keys:
-        y.append(test_data[key])
+        #y.append(test_data[key]['class'])
+        y.append(0);
         x.append(features[key])
 
     p_label, p_acc, p_val = liblinearutil.predict(y, x, model, '-q')
@@ -247,40 +260,17 @@ def evaluate_pr100(predictions, actual):
     for i in range(100):
         #print predictions[sorted_preds[i]], actual[sorted_preds[i]]
 
-        if actual[sorted_preds[i]] > 0:
+        if actual[sorted_preds[i]]['class'] > 0:
             correct += 1
 
 
     return float(correct) / 100
-
-def evaluate_aprf(predictions, actual):
-    tp = 0
-    tn = 0
-    fp = 0
-    fn = 0
-
-    for key in predictions:
-        if predictions[key]['class'] > 0:
-            if actual[key] > 0:
-                tp += 1
-            else:
-                fp += 1
-        else:
-            if actual[key] > 0:
-                fn += 1
-            else:
-                tn += 1
-
-    
-    return (float(tp + tn) / float(tp + fp + tn + fn)), tp, tn, fp, fn
-
 
 
 def cross_validate(data, features):
     print 'Getting folds'
     folds = get_folds(data)
 
-    average_acc = 0
     average_pr100 = 0
     for i in range(5):
         print 'Fold', (i+1)
@@ -308,19 +298,13 @@ def cross_validate(data, features):
         predictions = predict(test_data, normalized_test_features, model)
 
         print "Evaluate"
-        score = evaluate_aprf(predictions, test_data)
         pr100 = evaluate_pr100(predictions, test_data)
-        accr = score[0]
 
-        #print score[1], score[2], score[3], score[4]
-        print "Accuracy:", accr
         print "Pr@100:", pr100
         print
 
-        average_acc += accr
         average_pr100 += pr100
 
-    print "Average Accuracy:", average_acc / 5
     print "Average Pr@100:", average_pr100 / 5
 
 
@@ -361,7 +345,7 @@ def insert_predictions(data, features):
                 view_sum += val
 
             video_features[vid['video_id']] = {
-                'upload_date': vid['uploadDate']
+                'upload_date': vid['uploadDate'],
                 'view_sum' : view_sum
             }
 
@@ -380,16 +364,26 @@ def insert_predictions(data, features):
     conn.close()
     print "Done"
 
-parser = argparse.ArgumentParser()
-parser.add_argument('action')
-parser.add_argument('data_file')
-parser.add_argument('feature_file')
-args = parser.parse_args()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('action')
+    parser.add_argument('data_file')
+    parser.add_argument('feature_file')
+    parser.add_argument('baseline_file')
+    args = parser.parse_args()
 
-data = read_data(args.data_file)
-features = read_features(args.feature_file)
+    data = read_data(args.data_file)
+    features = read_features(args.feature_file, args.baseline_file)
 
-if args.action == 'cross_validate':
-    cross_validate(data, features)
-elif args.action == 'insert':
-    insert_predictions(data, features)
+    
+    remove = set()
+    for key in data:
+        if key not in features:
+            remove.add(key)
+    for r in remove:
+        del data[r]
+
+    if args.action == 'cross_validate':
+        cross_validate(data, features)
+    elif args.action == 'insert':
+        insert_predictions(data, features)
