@@ -20,7 +20,7 @@ map_f = open('map.js').read()
 reduce_f = open('reduce.js').read()
 finalize_f = open('finalize.js').read()
 
-out_name = 'features_' + str(start_date).split()[0]
+out_name = 'features_' + str(start_date).split()[0] + '_' + args.A
 
 start_ts = calendar.timegm(start_date.utctimetuple()) * 1000
 end_ts = calendar.timegm(end_date.utctimetuple()) * 1000

@@ -54,8 +54,10 @@ for vid_id in sorted_vids:
         coll.update({
             'video_id' : vid_id
         }, {
-            'uploadDate' : uploadDate,
-            'dailyViewCount' : data['dailyViewcount']
+            '$set:' : {
+                'uploadDate' : uploadDate,
+                'dailyViewCount' : data['dailyViewcount']
+            }
         })
     except Exception as ex:
         print "Exception:", ex, vid_id
