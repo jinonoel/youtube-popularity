@@ -4,14 +4,14 @@ class YoutubePopularityController < ApplicationController
   end
 
   def doAction
-    start_date = params['start_date']
+    upload_date = params['upload_date']
 
     conn = Mongo::Connection.new('localhost')
     db = conn['nicta']
     coll = db['predictions']
 
     top_videos = []
-    coll.find({},
+    coll.find({'upload_date' => upload_date},
               {
                 :sort => ['score', 'desc'],
                 :limit => 100
@@ -21,7 +21,8 @@ class YoutubePopularityController < ApplicationController
         'score' => result['score'],
         'actual' => result['actual'],
         'upload_date' => result['upload_date'],
-        'view_sum' => result['view_sum']
+        'a_views' => result['A_views'],
+        'b_views' => result['B_views']
       }
     end
 

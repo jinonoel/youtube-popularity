@@ -1,19 +1,34 @@
 
 
 <form id="yt_form" action="youtube_popularity/doAction" method="get">
-  <input type="text" id="start_date" name="start_date">
+  Upload Date: 
+  <select id="upload_date" name="upload_date">
+    <option value="2014-09-27">2014-09-27</option>
+    <option value="2014-09-28">2014-09-28</option>
+    <option value="2014-09-29">2014-09-29</option>
+    <option value="2014-09-30">2014-09-30</option>
+    <option value="2014-10-01">2014-10-01</option>
+    <option value="2014-10-02">2014-10-02</option>
+    <option value="2014-10-03">2014-10-03</option>
+    <option value="2014-10-04">2014-10-04</option>
+  </select>
+
+  <br>
 
   <input id="submit_btn" type="button" value="Submit">
   <input id="clear_btn" type="button" value="Clear">
 </form>
 
-<table id="video_table">
+<br>
+
+<table id="video_table" border="1">
   <tr>
     <th>Video</th>
-    <th>Upload Date</th>
-    <th>View Sum</th>
+    <!--<th>Upload Date</th>
     <th>Score</th>
-    <th>Actual</th>
+    <th>Actual</th>-->
+    <th>A views</th>
+    <th>B views</th>
   </tr>
 </table>
 
@@ -27,7 +42,7 @@
       jQuery.ajax({
         url : 'youtube_popularity/doAction',
         data : {
-          start_date : $('#start_date').val()
+          upload_date : $('#upload_date').val()
         },
         error : function() {
             alert('error!');
@@ -50,11 +65,13 @@
     for (var i = 0; i < top_videos.length; i++) {
       $('#video_table tr:last').after(
         '<tr class=\'data_row\'>'
-	+ '<td>' + top_videos[i].vid_id + '</td>'
-        + '<td>' + top_videos[i].upload_date + '</td>'
-        + '<td>' + top_videos[i].view_sum + '</td>'
-	+ '<td>' + top_videos[i].score + '</td>'
-	+ '<td>' + top_videos[i].actual + '</td>'
+	+ '<td><a href="http://www.youtube.com/watch?v=' + top_videos[i].vid_id + '">'
+	+ top_videos[i].vid_id + '</a></td>'
+        //+ '<td>' + top_videos[i].upload_date + '</td>'
+	//+ '<td>' + top_videos[i].score + '</td>'
+	//+ '<td>' + top_videos[i].actual + '</td>'
+        + '<td>' + top_videos[i].a_views + '</td>'
+        + '<td>' + top_videos[i].b_views + '</td>'
         + '</tr>'
       );
     }

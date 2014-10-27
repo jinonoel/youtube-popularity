@@ -308,7 +308,7 @@ def cross_validate(data, features):
     print "Average Pr@100:", average_pr100 / 5
 
 
-def insert_predictions(data, features):
+def insert_predictions(data, features, baseline_file):
     folds = get_folds(data)
     test_data = folds[0]
     train_data = {}
@@ -336,29 +336,25 @@ def insert_predictions(data, features):
     pred_coll = db['predictions']
     vid_coll = db['videos']
 
-    video_features = {}
+    for line in open(baseline_file):
+        tokens = line.strip().split(',')
+        vid_id = tokens[0]
+        if vid_id not in test_data:
+            continue
 
-    for vid in video_coll.find({'uploadDate' : {'$gte' : '2014-09-27'}}, timeout=False):
-        if vid['video_id'] in predictions:
-            view_sum = 0
-            for val in vid['dailyViewCount']:
-                view_sum += val
+        A_score = int(tokens[1])
 
-            video_features[vid['video_id']] = {
-                'upload_date': vid['uploadDate'],
-                'view_sum' : view_sum
-            }
+        test_data[vid_id]['train_views'] = A_score
 
-            if len(video_features) == len(predictions):
-                break
 
     for vid_id in predictions:
         pred_coll.insert({
             'id' : vid_id,
             'score' : predictions[vid_id]['score'],
-            'actual' : test_data[vid_id],
-            'upload_date' : video_features[vid_id]['upload_date'],
-            'view_sum' : video_features[vid_id]['view_sum']
+            'actual' : test_data[vid_id]['class'],
+            'upload_date' : test_data[vid_id]['upload_date'],
+            'B_views' : test_data[vid_id]['views'],
+            'A_views' : test_data[vid_id]['train_views']
         })
 
     conn.close()
@@ -386,4 +382,4 @@ if __name__ == "__main__":
     if args.action == 'cross_validate':
         cross_validate(data, features)
     elif args.action == 'insert':
-        insert_predictions(data, features)
+        insert_predictions(data, features, args.baseline_file)
