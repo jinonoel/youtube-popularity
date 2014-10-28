@@ -54,7 +54,7 @@ for vid_id in sorted_vids:
         coll.update({
             'video_id' : vid_id
         }, {
-            '$set:' : {
+            '$set' : {
                 'uploadDate' : uploadDate,
                 'dailyViewCount' : data['dailyViewcount']
             }
