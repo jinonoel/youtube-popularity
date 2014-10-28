@@ -1,5 +1,3 @@
-
-
 <form id="yt_form" action="youtube_popularity/doAction" method="get">
   Upload Date: 
   <select id="upload_date" name="upload_date">
@@ -15,8 +13,12 @@
 
   <br>
 
-  <input id="submit_btn" type="button" value="Submit">
-  <input id="clear_btn" type="button" value="Clear">
+  <div id="buttons">
+    <input id="submit_btn" type="button" value="Submit">
+    <input id="clear_btn" type="button" value="Clear">
+  </div>
+
+  <img id="loading" src="/assets/ajax-loader.gif" style="display:none;">
 </form>
 
 <br>
@@ -24,9 +26,6 @@
 <table id="video_table" border="1">
   <tr>
     <th>Video</th>
-    <!--<th>Upload Date</th>
-    <th>Score</th>
-    <th>Actual</th>-->
     <th>A views</th>
     <th>B views</th>
   </tr>
@@ -39,6 +38,9 @@
     });
 
     $('#submit_btn').on('click', function() {
+      $('#buttons').hide();
+      $('#loading').show();
+
       jQuery.ajax({
         url : 'youtube_popularity/doAction',
         data : {
@@ -50,6 +52,9 @@
         success : function(response) {
             clear_videos();
             show_videos(response.top_videos);
+
+            $('#buttons').show();
+            $('#loading').hide();
         }
       });
     });
