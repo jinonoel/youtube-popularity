@@ -35,7 +35,7 @@ def cross_validate(data, test_features):
         predictions = predict_baseline(test_data, test_features)
 
         print "Evaluate"
-        pr100 = evaluate.evaluate_pr100(predictions, test_data)
+        pr100 = evaluate.evaluate_map(predictions, test_data)
 
         print "Pr@100:", pr100
         print

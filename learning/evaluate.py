@@ -153,7 +153,7 @@ def get_best_c(data, features):
     for c in C_RANGE:
         c_model = train(train_data, features, c)
         predictions = predict(test_data, features, c_model)
-        metrics = evaluate_pr100(predictions, test_data)
+        metrics = evaluate_map(predictions, test_data)
         print metrics, c
 
         score = metrics
@@ -266,6 +266,18 @@ def evaluate_pr100(predictions, actual):
 
     return float(correct) / 100
 
+def evaluate_map(predictions, actual):
+    sorted_preds = sorted(predictions.keys(), key=lambda vid: predictions[vid]['score'], reverse=True)
+    
+    mean_ap = 0
+    pos_count = 0
+    for i in range(len(sorted_preds)):
+        if actual[sorted_preds[i]]['class'] > 0:
+            pos_count += 1
+            mean_ap += pos_count / float(i + 1)
+
+    mean_ap /= float(pos_count)
+    return mean_ap
 
 def cross_validate(data, features):
     print 'Getting folds'
@@ -298,14 +310,14 @@ def cross_validate(data, features):
         predictions = predict(test_data, normalized_test_features, model)
 
         print "Evaluate"
-        pr100 = evaluate_pr100(predictions, test_data)
+        pr100 = evaluate_map(predictions, test_data)
 
-        print "Pr@100:", pr100
+        print "Score:", pr100
         print
 
         average_pr100 += pr100
 
-    print "Average Pr@100:", average_pr100 / 5
+    print "Average Score", average_pr100 / 5
 
 
 def insert_predictions(data, features, baseline_file):
