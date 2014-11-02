@@ -19,12 +19,16 @@ print "Get last updated"
 for result in coll.find({'uploadDate' : {'$gte' : start_date}}, timeout=False):
     i += 1
     if i % 1000 == 0:
-        print i
+        print i, len(last_updated)
 
 
     vid_id = result['video_id'].split('#')[0]
     if vid_id in last_updated:
         continue
+
+    #if result['uploadDate'] > '2014-09-28':
+    #    continue
+
 
     upload_date = datetime.datetime.strptime(result['uploadDate'], '%Y-%m-%d')
     days_delta = datetime.timedelta(len(result['dailyViewCount']))
@@ -35,7 +39,6 @@ for result in coll.find({'uploadDate' : {'$gte' : start_date}}, timeout=False):
         'upload_date' : upload_date,
         'last_update' : last_update
     }
-
 
 sorted_vids = sorted(last_updated.keys(), key=lambda vid: last_updated[vid]['last_update'])
 
@@ -64,4 +67,4 @@ for vid_id in sorted_vids:
     except:
         print "WTF"
 
-db.close()
+conn.close()
