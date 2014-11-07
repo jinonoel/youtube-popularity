@@ -31,7 +31,7 @@ while current_date <= end_date:
     current_date_str = str(current_date).split()[0]
     print current_date_str
 
-    coll_name = 'features_' + current_date_str
+    coll_name = 'features_' + current_date_str + '_10'
     feature_coll = db[coll_name]
 
     i = 0

@@ -11,12 +11,11 @@ import crawler
 
 parser = argparse.ArgumentParser()
 parser.add_argument('start_date')
-parser.add_argument('end_date')
+parser.add_argument('A');
 args = parser.parse_args()
 
 start_date = args.start_date
-end_date = args.end_date
-
+A_days = args.A
 
 conn = pymongo.MongoClient('localhost')
 db = conn['nicta']
@@ -41,7 +40,7 @@ print "Existing:", len(existing_set)
 
 crawler = crawler.Crawler()
 
-mr_name = 'features_' + start_date + '_' + end_date
+mr_name = 'features_' + start_date + '_' + A_days
  
 i = 0
 for result in db[mr_name].find({}, ['_id'], timeout=False):
