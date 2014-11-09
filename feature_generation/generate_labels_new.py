@@ -8,6 +8,7 @@ parser.add_argument('start_date')
 parser.add_argument('A')
 parser.add_argument('B')
 parser.add_argument('output_file')
+parser.add_argument('baseline_file')
 args = parser.parse_args()
 
 start_date = args.start_date
@@ -43,9 +44,9 @@ for result in coll.find({'uploadDate' : {
     if vid_id in video_views:
         continue
     
-    upload_date = datetime.datetime(result['uploadDate'], '%Y-%m-%d')
+    upload_date = datetime.datetime.strptime(result['uploadDate'], '%Y-%m-%d')
     days_required = (day_B - upload_date).days + 1
-    baseline_days = (days_A - upload_date).days + 1
+    baseline_days = (day_A - upload_date).days + 1
 
     daily_counts = result['dailyViewCount']
 
@@ -65,8 +66,9 @@ for result in coll.find({'uploadDate' : {
     video_views[vid_id] = {
         'views' : total_views,
         'baselineViews' : baseline_views,
-        'uploadDate' : upload_date
+        'uploadDate' : str(upload_date).split()[0]
     }
+
 
 print 'Videos:', len(video_views)
 
