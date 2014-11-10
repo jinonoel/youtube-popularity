@@ -51,7 +51,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     data = evaluate.read_data(args.data_file)
-    features = evaluate.read_features(args.feature_file)
+    features = evaluate.read_features(args.feature_file, False, data.keys())
+
+    print 'data', len(data)
+    print 'feat', len(features)
+    #sys.exit()
 
     remove = set()
     for key in data:
@@ -60,4 +64,5 @@ if __name__ == "__main__":
     for r in remove:
         del data[r]
 
+    #print len(data), len(features)
     cross_validate(data, features)

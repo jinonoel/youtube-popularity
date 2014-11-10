@@ -31,11 +31,17 @@ C_RANGE = [
 
 random.seed(1)
 
-def read_features(filename, baseline_file = False):
+def read_features(filename, baseline_file = False, valid = {}):
     feature_map = {}
 
+    valid_set = set(valid)
+    print "Reading features"
     for line in open(filename):
+        #print line
         tokens = line.strip().split(',')
+        if tokens[0] not in valid_set or len(tokens) != 6:
+            continue
+
         feature = []
 
         for i in range(1, len(tokens)):
@@ -43,9 +49,12 @@ def read_features(filename, baseline_file = False):
 
         feature_map[tokens[0]] = feature
 
+    print "Reading baselines"
     if baseline_file:
         for line in open(baseline_file):
             tokens = line.strip().split(',')
+            if tokens[0] not in valid_set or len(tokens) != 2:
+                continue
             vid_id = tokens[0]
             views = tokens[1]
             if vid_id in feature_map:
@@ -59,6 +68,8 @@ def read_data(filename):
 
     for line in open(filename):
         tokens = line.strip().split(',')
+        if len(tokens) != 5:
+            continue
         data[tokens[0]] = {
             'class' : int(tokens[1]),
             'views' : int(tokens[2]),
@@ -153,7 +164,7 @@ def get_best_c(data, features):
     for c in C_RANGE:
         c_model = train(train_data, features, c)
         predictions = predict(test_data, features, c_model)
-        metrics = evaluate_map(predictions, test_data)
+        metrics = evaluate_pr100(predictions, test_data)
         print metrics, c
 
         score = metrics
@@ -253,6 +264,8 @@ def normalize_test(test_data, features, feature_mean, feature_std):
     return normalized_features
 
 def evaluate_pr100(predictions, actual):
+    return evaluate_map(predictions, actual)
+
     #assume pos score counts as a positive label (assert checks above)
     sorted_preds = sorted(predictions.keys(), key=lambda vid: predictions[vid]['score'], reverse=True)
 
@@ -271,6 +284,7 @@ def evaluate_map(predictions, actual):
     
     mean_ap = 0
     pos_count = 0
+    print "Len:", len(sorted_preds)
     for i in range(len(sorted_preds)):
         if actual[sorted_preds[i]]['class'] > 0:
             pos_count += 1
@@ -310,7 +324,7 @@ def cross_validate(data, features):
         predictions = predict(test_data, normalized_test_features, model)
 
         print "Evaluate"
-        pr100 = evaluate_map(predictions, test_data)
+        pr100 = evaluate_pr100(predictions, test_data)
 
         print "Score:", pr100
         print
@@ -320,7 +334,7 @@ def cross_validate(data, features):
     print "Average Score", average_pr100 / 5
 
 
-def insert_predictions(data, features, baseline_file):
+def insert_predictions(data, features, baseline_file, date):
     folds = get_folds(data)
     test_data = folds[0]
     train_data = {}
@@ -345,7 +359,7 @@ def insert_predictions(data, features, baseline_file):
     print "Insert"
     conn = pymongo.MongoClient('localhost')
     db = conn['nicta']
-    pred_coll = db['predictions']
+    pred_coll = db['predictions_' + date]
     vid_coll = db['videos']
 
     for line in open(baseline_file):
@@ -378,10 +392,11 @@ if __name__ == "__main__":
     parser.add_argument('data_file')
     parser.add_argument('feature_file')
     parser.add_argument('baseline_file')
+    parser.add_argument('date')
     args = parser.parse_args()
 
     data = read_data(args.data_file)
-    features = read_features(args.feature_file, args.baseline_file)
+    features = read_features(args.feature_file, args.baseline_file, data.keys())
 
     
     remove = set()
@@ -394,4 +409,4 @@ if __name__ == "__main__":
     if args.action == 'cross_validate':
         cross_validate(data, features)
     elif args.action == 'insert':
-        insert_predictions(data, features, args.baseline_file)
+        insert_predictions(data, features, args.baseline_file, args.date)
