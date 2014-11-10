@@ -8,7 +8,7 @@ class YoutubePopularityController < ApplicationController
 
     conn = Mongo::Connection.new('localhost')
     db = conn['nicta']
-    coll = db['predictions']
+    coll = db['predictions_' + upload_date]
 
     top_videos = []
     coll.find({'upload_date' => upload_date},
