@@ -1,16 +1,16 @@
 <form id="yt_form" action="youtube_popularity/doAction" method="get">
   Day A:
   <select id="upload_date" name="upload_date">
-    <option value="2014-09-27">2014-09-27</option>
-    <option value="2014-09-28">2014-09-28</option>
-    <option value="2014-09-29">2014-09-29</option>
-    <option value="2014-09-30">2014-09-30</option>
-    <option value="2014-10-01">2014-10-01</option>
-    <option value="2014-10-02">2014-10-02</option>
-    <option value="2014-10-03">2014-10-03</option>
-    <option value="2014-10-04">2014-10-04</option>
-    <option value="2014-10-05">2014-10-05</option>
-    <option value="2014-10-06">2014-10-06</option>
+    <option dayB = "2014-10-17" value="2014-10-07">2014-10-07</option>
+    <option dayB = "2014-10-18" value="2014-10-08">2014-10-08</option>
+    <option dayB = "2014-10-19" value="2014-10-09">2014-10-09</option>
+    <option dayB = "2014-10-20" value="2014-10-10">2014-10-10</option>
+    <option dayB = "2014-10-21" value="2014-10-11">2014-10-11</option>
+    <option dayB = "2014-10-22" value="2014-10-12">2014-10-12</option>
+    <option dayB = "2014-10-23" value="2014-10-13">2014-10-13</option>
+    <option dayB = "2014-10-24" value="2014-10-14">2014-10-14</option>
+    <option dayB = "2014-10-25" value="2014-10-15">2014-10-15</option>
+    <option dayB = "2014-10-26" value="2014-10-16">2014-10-16</option>
   </select>
 
   <br>
@@ -25,11 +25,12 @@
 
 <br>
 
-<table id="video_table" border="1">
+<table id="video_table" border="1" style="display:none;">
   <tr>
     <th>Video</th>
-    <th>A views</th>
-    <th>B views</th>
+    <th>Upload Date</th>
+    <th id="dayA_col"></th>
+    <th id="dayB_col"></th>
   </tr>
 </table>
 
@@ -52,7 +53,15 @@
             alert('error!');
         },
         success : function(response) {
+            $('#video_table').show();
             clear_videos();
+
+            var dayA = $('#upload_date').val();
+            var dayB = $("select option:selected").attr("dayB");
+
+            $("#dayA_col").html("No. of views by " + dayA);
+            $("#dayB_col").html("No. of views by " + dayB);
+
             show_videos(response.top_videos);
 
             $('#buttons').show();
@@ -76,7 +85,7 @@
         //Orig width 560 height 315
         + '<td><iframe width="420" height="236" src="//www.youtube.com/embed/' + top_videos[i].vid_id + '" frameborder="0" allowfullscreen></iframe></td>'
 	//+ top_videos[i].vid_id + '</a></td>'
-        //+ '<td>' + top_videos[i].upload_date + '</td>'
+        + '<td>' + top_videos[i].upload_date + '</td>'
 	//+ '<td>' + top_videos[i].score + '</td>'
 	//+ '<td>' + top_videos[i].actual + '</td>'
         + '<td>' + top_videos[i].a_views + '</td>'

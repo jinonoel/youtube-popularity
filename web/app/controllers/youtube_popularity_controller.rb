@@ -11,7 +11,7 @@ class YoutubePopularityController < ApplicationController
     coll = db['predictions_' + upload_date]
 
     top_videos = []
-    coll.find({'upload_date' => upload_date},
+    coll.find({},
               {
                 :sort => ['score', 'desc'],
                 :limit => 100
