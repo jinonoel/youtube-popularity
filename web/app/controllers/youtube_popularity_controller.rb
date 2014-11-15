@@ -9,13 +9,19 @@ class YoutubePopularityController < ApplicationController
 
   def doAction
     upload_date = params['upload_date']
+    threshold = params['threshold'].to_i
+
+    filter = {}
+    if threshold > 0
+      filter['A_views'] = {'$lte' => threshold}
+    end
 
     conn = Mongo::Connection.new('localhost')
     db = conn['nicta']
     coll = db['predictions_' + upload_date]
 
     top_videos = []
-    coll.find({},
+    coll.find(filter,
               {
                 :sort => ['score', 'desc'],
                 :limit => 100

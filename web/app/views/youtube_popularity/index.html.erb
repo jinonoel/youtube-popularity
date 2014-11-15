@@ -13,6 +13,8 @@
     <option dayB = "2014-10-26" value="2014-10-16">2014-10-16</option>
   </select>
 
+  Day A threshold:
+  <input type="input" id="threshold">
   <br>
 
   <div id="buttons">
@@ -31,6 +33,7 @@
     <th>Upload Date</th>
     <th id="dayA_col"></th>
     <th id="dayB_col"></th>
+    <th>Score</th>
   </tr>
 </table>
 
@@ -48,7 +51,8 @@
       jQuery.ajax({
         url : 'youtube_popularity/doAction',
         data : {
-          upload_date : $('#upload_date').val()
+          upload_date : $('#upload_date').val(),
+          threshold: $('#threshold').val()
         },
         error : function() {
             alert('error!');
@@ -82,15 +86,15 @@
     for (var i = 0; i < top_videos.length; i++) {
       $('#video_table tr:last').after(
         '<tr class=\'data_row\'>'
-	//+ '<td><a href="http://www.youtube.com/watch?v=' + top_videos[i].vid_id + '">' 
+
         //Orig width 560 height 315
         + '<td><iframe width="420" height="236" src="//www.youtube.com/embed/' + top_videos[i].vid_id + '" frameborder="0" allowfullscreen></iframe></td>'
-	//+ top_videos[i].vid_id + '</a></td>'
+
         + '<td>' + top_videos[i].upload_date + '</td>'
 	//+ '<td>' + top_videos[i].score + '</td>'
-	//+ '<td>' + top_videos[i].actual + '</td>'
         + '<td>' + top_videos[i].a_views + '</td>'
         + '<td>' + top_videos[i].b_views + '</td>'
+	+ '<td>' + top_videos[i].score + '</td>'
         + '</tr>'
       );
     }
