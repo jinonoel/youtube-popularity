@@ -373,6 +373,7 @@ def insert_predictions(data, features, baseline_file, date):
         test_data[vid_id]['train_views'] = A_score
 
 
+    pred_coll.drop()
     for vid_id in predictions:
         pred_coll.insert({
             'id' : vid_id,
@@ -380,9 +381,11 @@ def insert_predictions(data, features, baseline_file, date):
             'actual' : test_data[vid_id]['class'],
             'upload_date' : test_data[vid_id]['upload_date'],
             'B_views' : test_data[vid_id]['views'],
-            'A_views' : test_data[vid_id]['train_views']
+            'A_views' : test_data[vid_id]['train_views'],
+            'features' : features[vid_id]
         })
 
+    pred_coll.ensure_index({'A_views' : 1})
     conn.close()
     print "Done"
 
