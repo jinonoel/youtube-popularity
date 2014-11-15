@@ -3,6 +3,10 @@ class YoutubePopularityController < ApplicationController
   def index
   end
 
+  def number_with_delimiter(number, delimiter=",")
+    number.to_s.gsub(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1#{delimiter}")
+  end
+
   def doAction
     upload_date = params['upload_date']
 
@@ -21,8 +25,8 @@ class YoutubePopularityController < ApplicationController
         'score' => result['score'],
         'actual' => result['actual'],
         'upload_date' => result['upload_date'],
-        'a_views' => result['A_views'],
-        'b_views' => result['B_views']
+        'a_views' => number_with_delimiter(result['A_views']),
+        'b_views' => number_with_delimiter(result['B_views'])
       }
     end
 
