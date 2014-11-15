@@ -385,7 +385,7 @@ def insert_predictions(data, features, baseline_file, date):
             'features' : features[vid_id]
         })
 
-    pred_coll.ensure_index({'A_views' : 1})
+    pred_coll.ensure_index("A_views")
     conn.close()
     print "Done"
 
