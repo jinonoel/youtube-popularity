@@ -32,7 +32,8 @@ class YoutubePopularityController < ApplicationController
         'actual' => result['actual'],
         'upload_date' => result['upload_date'],
         'a_views' => number_with_delimiter(result['A_views']),
-        'b_views' => number_with_delimiter(result['B_views'])
+        'b_views' => number_with_delimiter(result['B_views']),
+        'features' => result['features'].inspect
       }
     end
 
