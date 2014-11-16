@@ -66,12 +66,19 @@ function() {
 	}
 
 	if (key != '') {
+	    tweets = [];
+	    tweets.push(this.text);
+	    authors = [];
+	    authors.push(this.user.screename);
+
 	    tweetData = {
 		has_mention : hasMention,
 		has_hashtag : hasHashtag,
 		is_rt : isRT,
 		is_nbc : isNBC,
-                tweet_count : 1
+                tweet_count : 1,
+		tweets : tweets,
+		authors : authors
 	    };
 
 	    emit(key, tweetData);
