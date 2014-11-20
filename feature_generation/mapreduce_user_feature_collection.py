@@ -16,10 +16,10 @@ conn = pymongo.MongoClient('localhost')
 db = conn['nicta']
 tweet_coll = db['tweet']
 
-map_f = open('tweet_map.js').read()
-reduce_f = open('tweet_reduce.js').read()
+map_f = open('user_map.js').read()
+reduce_f = open('user_reduce.js').read()
 
-out_name = 'features_' + str(start_date).split()[0] + '_' + args.A
+out_name = 'user_features_' + str(start_date).split()[0] + '_' + args.A
 
 start_ts = calendar.timegm(start_date.utctimetuple()) * 1000
 end_ts = calendar.timegm(end_date.utctimetuple()) * 1000

@@ -69,7 +69,9 @@ function() {
 	    tweets = [];
 	    tweets.push(this.text);
 	    authors = [];
-	    authors.push(this.user.screename);
+	    sample_authors = [];
+	    authors.push(this.user.screen_name);
+	    sample_authors.push(this.user.screen_name);
 
 	    tweetData = {
 		has_mention : hasMention,
@@ -77,8 +79,9 @@ function() {
 		is_rt : isRT,
 		is_nbc : isNBC,
                 tweet_count : 1,
-		tweets : tweets,
-		authors : authors
+		sample_tweets : tweets,
+		authors : authors,
+		sample_authors : authors
 	    };
 
 	    emit(key, tweetData);
