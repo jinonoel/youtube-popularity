@@ -5,8 +5,9 @@ function(key, values) {
 	is_rt : 0,
 	is_nbc : 0,
 	tweet_count : 0,
-	sameple_tweets : [],
-	sample_authors : []
+	sample_tweets : [],
+	sample_authors : [],
+	authors : []
     }
    
     for (var i = 0; i < values.length; i++) {
@@ -16,8 +17,8 @@ function(key, values) {
 	tweetData.is_nbc += values[i].is_nbc;
 	tweetData.tweet_count += values[i].tweet_count;
 
-	for (var j = 0; j < values[i].tweets.length; j++) {
-	    if (tweetData.tweets.length < 5) {
+	for (var j = 0; j < values[i].sample_tweets.length; j++) {
+	    if (tweetData.sample_tweets.length < 5) {
 		tweetData.sample_tweets.push(values[i].sample_tweets[j]);
 		tweetData.sample_authors.push(values[i].sample_authors[j]);
 	    }
