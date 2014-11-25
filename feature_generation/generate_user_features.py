@@ -30,7 +30,7 @@ for result in feature_coll.find():
     if i % 100000 == 0:
         print i, written
 
-    vid_id = result['_id']
+    user_id = result['_id']
     has_mention = result['value']['has_mention']
     has_hashtag = result['value']['has_hashtag']
     is_rt = result['value']['is_rt']
@@ -39,18 +39,10 @@ for result in feature_coll.find():
     
     written += 1
 
-    if not is_ascii(vid_id):
+    if not is_ascii(user_id):
         continue
 
-    authors_csv = ""
-    for a in result['value']['authors']:
-        authors_csv += "," + a
-
-    if len(authors_csv) == 0:
-        print "No authors"
-        sys.exit()
-
-    output.write(vid_id + ',' + str(has_mention) + ',' + str(has_hashtag) + ',' + str(is_rt) + ',' + str(is_nbc) + ',' + str(tweet_count) + authors + '\n')
+    output.write(user_id + ',' + str(has_mention) + ',' + str(has_hashtag) + ',' + str(is_rt) + ',' + str(is_nbc) + ',' + str(tweet_count) + '\n')
 
 
 output.close()
