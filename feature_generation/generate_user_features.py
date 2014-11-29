@@ -15,7 +15,7 @@ video_features = {}
 
 output = open(args.output_file, 'w')
 
-coll_name = 'features_' + args.date + '_10'
+coll_name = 'user_features_' + args.date + '_10'
 feature_coll = db[coll_name]
 
 i = 0

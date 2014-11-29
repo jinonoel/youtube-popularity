@@ -50,7 +50,7 @@ for result in feature_coll.find():
         print "No authors"
         sys.exit()
 
-    output.write(vid_id + ',' + str(has_mention) + ',' + str(has_hashtag) + ',' + str(is_rt) + ',' + str(is_nbc) + ',' + str(tweet_count) + authors + '\n')
+    output.write(vid_id + ',' + str(has_mention) + ',' + str(has_hashtag) + ',' + str(is_rt) + ',' + str(is_nbc) + ',' + str(tweet_count) + authors_csv + '\n')
 
 
 output.close()
