@@ -31,23 +31,107 @@ C_RANGE = [
 
 random.seed(1)
 
-def read_features(filename, baseline_file = False, valid = {}):
+def sum_log(features):
+    val = 0
+
+    for f in features:
+        val += math.log(f + 1)
+
+    return val
+
+def log_sum(features):
+    val = 0
+
+    for f in features:
+        val += f + 1
+
+    return math.log(val)
+
+def mean_log(features):
+    val = sum_log(features)
+    return float(val) / len(features)
+
+def log_mean(features):
+    val = 0
+
+    for f in features:
+        val += f + 1
+
+    val /= float(len(features))
+    return math.log(val)
+
+def std_log(features):
+    vals = []
+    val_sum = 0
+
+    for f in features:
+        log = math.log(f + 1)
+        vals.append(log)
+        val_sum += log
+
+    val_mean = float(val_sum) / len(features)
+
+    std = 0
+    for v in vals:
+        std += (val_mean - v) ** 2
+
+    std /= float(len(vals))
+    return math.sqrt(std)
+
+def log_std(features):
+    val_sum = 0
+
+    for f in features:
+        val_sum += f
+
+    val_mean = float(val_sum) / len(features)
+
+    std = 0
+    for f in features:
+        std += (val_mean - f) ** 2
+
+    std /= float(len(features))
+    return math.log(math.sqrt(std) + 1)
+
+def read_features(filename, user_filename, baseline_file = False, valid = {}):
     feature_map = {}
+    video_users = {}
+    all_users = set()
 
     valid_set = set(valid)
     print "Reading features"
     for line in open(filename):
         #print line
         tokens = line.strip().split(',')
-        if tokens[0] not in valid_set or len(tokens) != 6:
+        if tokens[0] not in valid_set:# or len(tokens) != 6:
+            continue
+
+        if len(tokens) < 6:
+            print line
             continue
 
         feature = []
+        valid = True
+        for i in range(1, 6):
+            try:
+                feature.append(float(tokens[i]))
+            except ValueError:
+                valid = False
+                break
 
-        for i in range(1, len(tokens)):
-            feature.append(float(tokens[i]))
+        if valid:
+            feature_map[tokens[0]] = feature
+            video_users[tokens[0]] = set();
 
-        feature_map[tokens[0]] = feature
+            for i in range(6, len(tokens)):
+                video_users[tokens[0]].add(tokens[i])
+                all_users.add(tokens[i])
+
+            if len(video_users[tokens[0]]) == 0:
+                print "ZERO!"
+
+    print "All users:", len(all_users)
+    print "All videos:", len(feature_map)
 
     print "Reading baselines"
     if baseline_file:
@@ -55,10 +139,68 @@ def read_features(filename, baseline_file = False, valid = {}):
             tokens = line.strip().split(',')
             if tokens[0] not in valid_set or len(tokens) != 2:
                 continue
+
             vid_id = tokens[0]
             views = tokens[1]
             if vid_id in feature_map:
                 feature_map[vid_id].append(int(views))
+
+
+    print "Read user features"
+    user_map = {}
+    for line in open(user_filename):
+        tokens = line.strip().split(',')
+        user_id = tokens[0]
+        if user_id not in all_users:
+            continue
+
+        user_feature = []
+        for i in range(1, 6):
+            user_feature.append(float(tokens[i]))
+
+        user_map[user_id] = user_feature
+
+
+    print "user_map:", len(user_map)
+
+    vid_count = 0
+    remove = set()
+    for vid_id in feature_map:
+        vid_count += 1
+        if vid_count % 50000 == 0:
+            print vid_count
+
+        active_features = []
+
+        for u in video_users[vid_id]:
+            if u not in user_map:
+                continue
+
+
+            for i in range(len(user_map[u])):
+                if len(active_features) == i:
+                    active_features.append([])
+
+                active_features[i].append(user_map[u][i])
+
+            #print "yo:", len(active_features), len(user_map[u])
+
+        if len(active_features) < 5:
+            remove.add(vid_id)
+            continue
+
+        for i in range(len(active_features)):
+            feature_map[vid_id].append(sum_log(active_features[i]))
+            feature_map[vid_id].append(log_sum(active_features[i]))
+            feature_map[vid_id].append(mean_log(active_features[i]))
+            feature_map[vid_id].append(log_mean(active_features[i]))
+            feature_map[vid_id].append(std_log(active_features[i]))
+            feature_map[vid_id].append(log_std(active_features[i]))
+
+    for r in remove:
+        del feature_map[r]
+
+    print "final:", len(feature_map)
 
     return feature_map
 
@@ -395,11 +537,12 @@ if __name__ == "__main__":
     parser.add_argument('data_file')
     parser.add_argument('feature_file')
     parser.add_argument('baseline_file')
+    parser.add_argument('user_features_file')
     parser.add_argument('date')
     args = parser.parse_args()
 
     data = read_data(args.data_file)
-    features = read_features(args.feature_file, args.baseline_file, data.keys())
+    features = read_features(args.feature_file, args.user_features_file, args.baseline_file, data.keys())
 
     
     remove = set()
