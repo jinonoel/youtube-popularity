@@ -165,6 +165,7 @@ def read_features(filename, user_filename, baseline_file = False, valid = {}):
 
     vid_count = 0
     remove = set()
+    vid_active_features = {}
     for vid_id in feature_map:
         vid_count += 1
         if vid_count % 50000 == 0:
@@ -189,6 +190,8 @@ def read_features(filename, user_filename, baseline_file = False, valid = {}):
             remove.add(vid_id)
             continue
 
+        vid_active_features[vid_id] = active_features
+
         for i in range(len(active_features)):
             feature_map[vid_id].append(sum_log(active_features[i]))
             feature_map[vid_id].append(log_sum(active_features[i]))
@@ -197,12 +200,18 @@ def read_features(filename, user_filename, baseline_file = False, valid = {}):
             feature_map[vid_id].append(std_log(active_features[i]))
             feature_map[vid_id].append(log_std(active_features[i]))
 
+            #print sum_log(active_features[i]), log_sum(active_features[i]), mean_log(active_features[i]), log_mean(active_features[i]), std_log(active_features[i]), log_std(active_features[i])
+            #print
+
+        #print feature_map[vid_id]
+
+
     for r in remove:
         del feature_map[r]
 
     print "final:", len(feature_map)
 
-    return feature_map
+    return feature_map, vid_active_features
 
 
 def read_data(filename):
@@ -476,7 +485,7 @@ def cross_validate(data, features):
     print "Average Score", average_pr100 / 5
 
 
-def insert_predictions(data, features, baseline_file, date):
+def insert_predictions(data, features, active_features, baseline_file, date):
     folds = get_folds(data)
     test_data = folds[0]
     train_data = {}
@@ -524,7 +533,8 @@ def insert_predictions(data, features, baseline_file, date):
             'upload_date' : test_data[vid_id]['upload_date'],
             'B_views' : test_data[vid_id]['views'],
             'A_views' : test_data[vid_id]['train_views'],
-            'features' : features[vid_id]
+            'features' : features[vid_id],
+            'active_features' : active_features[vid_id]
         })
 
     pred_coll.ensure_index("A_views")
@@ -542,7 +552,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     data = read_data(args.data_file)
-    features = read_features(args.feature_file, args.user_features_file, args.baseline_file, data.keys())
+    features, active_features = read_features(args.feature_file, args.user_features_file, args.baseline_file, data.keys())
 
     
     remove = set()
@@ -555,4 +565,4 @@ if __name__ == "__main__":
     if args.action == 'cross_validate':
         cross_validate(data, features)
     elif args.action == 'insert':
-        insert_predictions(data, features, args.baseline_file, args.date)
+        insert_predictions(data, features, active_features, args.baseline_file, args.date)
