@@ -19,12 +19,13 @@ class YoutubePopularityController < ApplicationController
     conn = Mongo::Connection.new('localhost')
     db = conn['nicta']
     coll = db['predictions_' + upload_date]
+    w_coll = db['predictions_' + upload_date]
 
     top_videos = []
+    score_rank = 1
     coll.find(filter,
               {
                 :sort => ['score', 'desc'],
-                :limit => 100
               }).each do |result|
       top_videos << {
         'vid_id' => result['id'],
@@ -33,13 +34,31 @@ class YoutubePopularityController < ApplicationController
         'upload_date' => result['upload_date'],
         'a_views' => number_with_delimiter(result['A_views']),
         'b_views' => number_with_delimiter(result['B_views']),
-        'features' => result['features'].inspect
+        'features' => result['features'].inspect,
+        'model_rank' => score_rank
       }
+
+      score_rank += 1
     end
+
+    a_rank = 1
+    top_videos.sort{|a,b| b['a_views'] <=> a['a_views']}.each do |v|
+      v['a_rank'] = a_rank
+      a_rank += 1
+    end
+
+    b_rank = 1
+    top_videos.sort{|a,b| b['b_views'] <=> a['b_views']}.each do |v|
+      v['b_rank'] = b_rank
+      b_rank += 1
+    end
+
+    weights = w_coll.find_one()
 
     render json: {
       'status' => 'success',
-      'top_videos' => top_videos
+      'top_videos' => top_videos[0, 100]
+      'weights' => weights['weights'].inspect
     }
   end
 end

@@ -512,6 +512,7 @@ def insert_predictions(data, features, active_features, baseline_file, date):
     db = conn['nicta']
     pred_coll = db['predictions_' + date]
     vid_coll = db['videos']
+    w_coll = db['weights_' + date]
 
     for line in open(baseline_file):
         tokens = line.strip().split(',')
@@ -538,6 +539,23 @@ def insert_predictions(data, features, active_features, baseline_file, date):
         })
 
     pred_coll.ensure_index("A_views")
+
+    liblinearutil.save_model('MODEL.DAT', model)
+    weight_line = False
+    weights = []
+    for line in open('MODEL.DAT'):
+        if not weight_line and line.strip() != 'w':
+            continue
+        elif line.strip() == 'w':
+            weight_line = True
+            continue
+        else:
+            weights.append(float(line.strip()))
+
+    w_coll.remove()
+    w_coll.insert({'weights' : weights})
+            
+        
     conn.close()
     print "Done"
 
