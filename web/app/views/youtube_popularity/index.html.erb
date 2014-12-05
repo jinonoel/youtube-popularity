@@ -43,7 +43,7 @@ Feature Weights: <span id="weights"></span>
     <th id="dayA_col"></th>
     <th id="dayB_col"></th>
     <th>Score</th>
-    <!--<th>Features [mentions, hashtag, RT, NBC, tweets, A_views]</th>-->
+    <th>Features</th>
 
   </tr>
 </table>
@@ -70,7 +70,7 @@ Feature Weights: <span id="weights"></span>
             alert('error!');
         },
         success : function(response) {
-            $('#weights').html(response.weights);
+            $('#weights').html(response.weights_map);
             $('#video_table').show();
             clear_videos();
 
@@ -112,7 +112,19 @@ Feature Weights: <span id="weights"></span>
         + '<td>' + top_videos[i].a_views + '</td>'
         + '<td>' + top_videos[i].b_views + '</td>'
 	+ '<td>' + top_videos[i].score + '</td>'
-        //+ '<td>' + top_videos[i].features + '</td>'
+        + '<td>' 
+        + 'v.mention: ' + top_videos[i].feature_dot['v.mention'] + '<br>'
+        + 'v.hashtag: ' + top_videos[i].feature_dot['v.hashtag'] + '<br>'
+        + 'v.rt: ' + top_videos[i].feature_dot['v.rt'] + '<br>'
+        + 'v.nbc: ' + top_videos[i].feature_dot['v.nbc'] + '<br>'
+        + 'v.tweet: ' + top_videos[i].feature_dot['v.tweet'] + '<br>'
+        + 'v.a_views: ' + top_videos[i].feature_dot['v.a_views'] + '<br>'
+        + 'u.mention: ' + top_videos[i].feature_dot['u.mention'] + '<br>'
+        + 'u.hashtag: ' + top_videos[i].feature_dot['u.hashtag'] + '<br>'
+        + 'u.rt: ' + top_videos[i].feature_dot['u.rt'] + '<br>'
+        + 'u.nbc: ' + top_videos[i].feature_dot['u.nbc'] + '<br>'
+        + 'u.tweet: ' + top_videos[i].feature_dot['u.tweet'] + '<br>'
+        + '</td>'
         + '</tr>'
       );
     }
