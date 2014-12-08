@@ -19,7 +19,7 @@ function() {
 	    if (text.charAt(0) == '@') isNBC = 1;
 
             for (var i = 0; i < entities.user_mentions.length; i++) {
-		if (typeof entities.user_mentions[i].screen_name != 'undefined' && typeof entities.user_mentions[i].screen_name.length > 0) {
+		if (typeof entities.user_mentions[i].screen_name != 'undefined' && entities.user_mentions[i].screen_name.length > 0) {
 		    userMentions.push(entities.user_mentions[i].screen_name);
 		}
             }

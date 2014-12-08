@@ -27,6 +27,7 @@ function(key, values) {
 
 	for (var j = 0; j < values[i].user_mentions.length; j++) {
 	    user = values[i].user_mentions[j];
+	    userData.user_mentions.push(user);
 
 	    if (values[i].has_mention > 0) {
 		userData.user_interactions.mention.push(user);
