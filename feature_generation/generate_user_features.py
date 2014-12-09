@@ -31,18 +31,24 @@ for result in feature_coll.find():
         print i, written
 
     user_id = result['_id']
+
+    if not is_ascii(user_id):
+        continue
+
     has_mention = result['value']['has_mention']
     has_hashtag = result['value']['has_hashtag']
     is_rt = result['value']['is_rt']
     is_nbc = result['value']['is_nbc']
     tweet_count = result['value']['tweet_count']
-    
+    mentions = len(result['value']['mentions'])
+    hashtags = len(result['value']['hashtags'])
+    rts = len(result['value']['rts'])
+    nbcs = len(result['value']['nbcs'])
+
     written += 1
 
-    if not is_ascii(user_id):
-        continue
-
-    output.write(user_id + ',' + str(has_mention) + ',' + str(has_hashtag) + ',' + str(is_rt) + ',' + str(is_nbc) + ',' + str(tweet_count) + '\n')
+        
+    output.write(user_id + ',' + str(has_mention) + ',' + str(has_hashtag) + ',' + str(is_rt) + ',' + str(is_nbc) + ',' + str(tweet_count) + ',' + str(mentions) + ',' + str(hashtags) + ',' + str(rts) + ',' + str(nbcs) + '\n')
 
 
 output.close()
