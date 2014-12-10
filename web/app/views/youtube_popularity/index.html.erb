@@ -5,12 +5,14 @@
     <option dayB = "2014-10-18" value="2014-10-08">2014-10-08</option>
     <option dayB = "2014-10-19" value="2014-10-09">2014-10-09</option>
     <option dayB = "2014-10-20" value="2014-10-10">2014-10-10</option>
+<!--
     <option dayB = "2014-10-21" value="2014-10-11">2014-10-11</option>
     <option dayB = "2014-10-22" value="2014-10-12">2014-10-12</option>
     <option dayB = "2014-10-23" value="2014-10-13">2014-10-13</option>
     <option dayB = "2014-10-24" value="2014-10-14">2014-10-14</option>
     <option dayB = "2014-10-25" value="2014-10-15">2014-10-15</option>
     <option dayB = "2014-10-26" value="2014-10-16">2014-10-16</option>
+-->
   </select>
   <br>
 
@@ -120,10 +122,24 @@ Feature Weights: <span id="weights"></span>
         + 'v.tweet: ' + top_videos[i].feature_dot['v.tweet'] + '<br>'
         + 'v.a_views: ' + top_videos[i].feature_dot['v.a_views'] + '<br>'
         + 'u.mention: ' + top_videos[i].feature_dot['u.mention'] + '<br>'
+	+ 'u.mention_per_day: ' + top_videos[i].feature_dot['u.mention_per_day'] + '<br>'
         + 'u.hashtag: ' + top_videos[i].feature_dot['u.hashtag'] + '<br>'
+        + 'u.hashtag_per_day: ' + top_videos[i].feature_dot['u.hashtag_per_day'] + '<br>'
         + 'u.rt: ' + top_videos[i].feature_dot['u.rt'] + '<br>'
+        + 'u.rt_per_day: ' + top_videos[i].feature_dot['u.rt_per_day'] + '<br>'
         + 'u.nbc: ' + top_videos[i].feature_dot['u.nbc'] + '<br>'
+        + 'u.nbc_per_day: ' + top_videos[i].feature_dot['u.nbc_per_day'] + '<br>'
         + 'u.tweet: ' + top_videos[i].feature_dot['u.tweet'] + '<br>'
+        + 'u.tweet_per_day: ' + top_videos[i].feature_dot['u.tweet_per_day'] + '<br>'
+
+        + 'u.mention_interaction: ' + top_videos[i].feature_dot['u.mention_interaction'] + '<br>'
+	+ 'u.mention_interaction_per_day: ' + top_videos[i].feature_dot['u.mention_interaction_per_day'] + '<br>'
+        + 'u.hashtag_interaction: ' + top_videos[i].feature_dot['u.hashtag_interaction'] + '<br>'
+        + 'u.hashtag_interaction_per_day: ' + top_videos[i].feature_dot['u.hashtag_interaction_per_day'] + '<br>'
+        + 'u.rt_interaction: ' + top_videos[i].feature_dot['u.rt_interaction'] + '<br>'
+        + 'u.rt_interaction_per_day: ' + top_videos[i].feature_dot['u.rt_interaction_per_day'] + '<br>'
+        + 'u.nbc_interaction: ' + top_videos[i].feature_dot['u.nbc_interaction'] + '<br>'
+        + 'u.nbc_interaction_per_day: ' + top_videos[i].feature_dot['u.nbc_interaction_per_day'] + '<br>'
         + '</td>'
         + '</tr>'
       );

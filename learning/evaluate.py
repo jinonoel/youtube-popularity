@@ -155,8 +155,10 @@ def read_features(filename, user_filename, baseline_file = False, valid = {}):
             continue
 
         user_feature = []
-        for i in range(1, 6):
-            user_feature.append(float(tokens[i]))
+        for i in range(1, 10):
+            f = float(tokens[i])
+            user_feature.append(f)
+            user_feature.append(f / 10) #Divide by A=10
 
         user_map[user_id] = user_feature
 
@@ -186,7 +188,7 @@ def read_features(filename, user_filename, baseline_file = False, valid = {}):
 
             #print "yo:", len(active_features), len(user_map[u])
 
-        if len(active_features) < 5:
+        if len(active_features) < 9:
             remove.add(vid_id)
             continue
 
