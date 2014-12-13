@@ -32,6 +32,375 @@
 
 Feature Weights: <span id="weights"></span>
 
+<table id="feature_weights">
+  <tr>
+    <td><b>v.mention</b></td>
+    <td id="v.mention"></td>
+
+    <td><b>u.mention (sum_log)</b></td>
+    <td id="u.mention_sum_log"></td>
+
+    <td><b>u.mention_per_day (sum_log)</b></td>
+    <td id="u.mention_per_day_sum_log"></td>
+
+    <td><b>u.hashtag (sum_log)</b></td>
+    <td id="u.hashtag_sum_log"></td>
+
+    <td><b>u.hashtag_per_day (sum_log)</b></td>
+    <td id="u.hashtag_per_day_sum_log"></td>
+
+    <td><b>u.rt (sum_log)</b></td>
+    <td id="u.rt_sum_log"></td>
+
+    <td><b>u.rt_per_day (sum_log)</b></td>
+    <td id="u.rt_per_day_sum_log"></td>
+
+    <td><b>u.nbc (sum_log)</b></td>
+    <td id="u.nbc_sum_log"></td>
+
+    <td><b>u.nbc_per_day (sum_log)</b></td>
+    <td id="u.nbc_per_day_sum_log"></td>
+
+    <td><b>u.tweet (sum_log)</b></td>
+    <td id="u.tweet_sum_log"></td>
+
+    <td><b>u.tweet_per_day (sum_log)</b></td>
+    <td id="u.tweet_per_day_sum_log"></td>
+  </tr>
+
+  <tr>
+    <td><b>v.hashtag</b></td>
+    <td id="v.hashtag"></td>
+
+    <td><b>u.mention (log_sum)</b></td>
+    <td id="u.mention_log_sum"></td>
+
+    <td><b>u.mention_per_day (log_sum)</b></td>
+    <td id="u.mention_per_day_log_sum"></td>
+
+    <td><b>u.hashtag (log_sum)</b></td>
+    <td id="u.hashtag_log_sum"></td>
+
+    <td><b>u.hashtag_per_day (log_sum)</b></td>
+    <td id="u.hashtag_per_day_log_sum"></td>
+
+    <td><b>u.rt (log_sum)</b></td>
+    <td id="u.rt_log_sum"></td>
+
+    <td><b>u.rt_per_day (log_sum)</b></td>
+    <td id="u.rt_per_day_log_sum"></td>
+
+    <td><b>u.nbc (log_sum)</b></td>
+    <td id="u.nbc_log_sum"></td>
+
+    <td><b>u.nbc_per_day (log_sum)</b></td>
+    <td id="u.nbc_per_day_log_sum"></td>
+
+    <td><b>u.tweet (log_sum)</b></td>
+    <td id="u.tweet_log_sum"></td>
+
+    <td><b>u.tweet_per_day (log_sum)</b></td>
+    <td id="u.tweet_per_day_log_sum"></td>
+  </tr>
+
+  <tr>
+    <td><b>v.rt</b></td>
+    <td id="v.rt"></td>
+
+    <td><b>u.mention (mean_log)</b></td>
+    <td id="u.mention_mean_log"></td>
+
+    <td><b>u.mention_per_day (mean_log)</b></td>
+    <td id="u.mention_per_day_mean_log"></td>
+
+    <td><b>u.hashtag (mean_log)</b></td>
+    <td id="u.hashtag_mean_log"></td>
+
+    <td><b>u.hashtag_per_day (mean_log)</b></td>
+    <td id="u.hashtag_per_day_mean_log"></td>
+
+    <td><b>u.rt (mean_log)</b></td>
+    <td id="u.rt_mean_log"></td>
+
+    <td><b>u.rt_per_day (mean_log)</b></td>
+    <td id="u.rt_per_day_mean_log"></td>
+
+    <td><b>u.nbc (mean_log)</b></td>
+    <td id="u.nbc_mean_log"></td>
+
+    <td><b>u.nbc_per_day (mean_log)</b></td>
+    <td id="u.nbc_per_day_mean_log"></td>
+
+    <td><b>u.tweet (mean_log)</b></td>
+    <td id="u.tweet_mean_log"></td>
+
+    <td><b>u.tweet_per_day (mean_log)</b></td>
+    <td id="u.tweet_per_day_mean_log"></td>
+  </tr>
+
+  <tr>
+    <td><b>v.nbc</b></td>
+    <td id="v.nbc"></td>
+
+    <td><b>u.mention (log_mean)</b></td>
+    <td id="u.mention_log_mean"></td>
+
+    <td><b>u.mention_per_day (log_mean)</b></td>
+    <td id="u.mention_per_day_log_mean"></td>
+
+    <td><b>u.hashtag (log_mean)</b></td>
+    <td id="u.hashtag_log_mean"></td>
+
+    <td><b>u.hashtag_per_day (log_mean)</b></td>
+    <td id="u.hashtag_per_day_log_mean"></td>
+
+    <td><b>u.rt (log_mean)</b></td>
+    <td id="u.rt_log_mean"></td>
+
+    <td><b>u.rt_per_day (log_mean)</b></td>
+    <td id="u.rt_per_day_log_mean"></td>
+
+    <td><b>u.nbc (log_mean)</b></td>
+    <td id="u.nbc_log_mean"></td>
+
+    <td><b>u.nbc_per_day (log_mean)</b></td>
+    <td id="u.nbc_per_day_log_mean"></td>
+
+    <td><b>u.tweet (log_mean)</b></td>
+    <td id="u.tweet_log_mean"></td>
+
+    <td><b>u.tweet_per_day (log_mean)</b></td>
+    <td id="u.tweet_per_day_log_mean"></td>
+  </tr>
+
+  <tr>
+    <td><b>v.tweet</b></td>
+    <td id="v.tweet"></td>
+
+    <td><b>u.mention (std_log)</b></td>
+    <td id="u.mention_std_log"></td>
+
+    <td><b>u.mention_per_day (std_log)</b></td>
+    <td id="u.mention_per_day_std_log"></td>
+
+    <td><b>u.hashtag (std_log)</b></td>
+    <td id="u.hashtag_std_log"></td>
+
+    <td><b>u.hashtag_per_day (std_log)</b></td>
+    <td id="u.hashtag_per_day_std_log"></td>
+
+    <td><b>u.rt (std_log)</b></td>
+    <td id="u.rt_std_log"></td>
+
+    <td><b>u.rt_per_day (std_log)</b></td>
+    <td id="u.rt_per_day_std_log"></td>
+
+    <td><b>u.nbc (std_log)</b></td>
+    <td id="u.nbc_std_log"></td>
+
+    <td><b>u.nbc_per_day (std_log)</b></td>
+    <td id="u.nbc_per_day_std_log"></td>
+
+    <td><b>u.tweet (std_log)</b></td>
+    <td id="u.tweet_std_log"></td>
+
+    <td><b>u.tweet_per_day (std_log)</b></td>
+    <td id="u.tweet_per_day_std_log"></td>
+  </tr>
+
+  <tr>
+    <td><b>v.a_views</b></td>
+    <td id="v.a_views"></td>
+
+    <td><b>u.mention (log_std)</b></td>
+    <td id="u.mention_log_std"></td>
+
+    <td><b>u.mention_per_day (log_std)</b></td>
+    <td id="u.mention_per_day_log_std"></td>
+
+    <td><b>u.hashtag (log_std)</b></td>
+    <td id="u.hashtag_log_std"></td>
+
+    <td><b>u.hashtag_per_day (log_std)</b></td>
+    <td id="u.hashtag_per_day_log_std"></td>
+
+    <td><b>u.rt (log_std)</b></td>
+    <td id="u.rt_log_std"></td>
+
+    <td><b>u.rt_per_day (log_std)</b></td>
+    <td id="u.rt_per_day_log_std"></td>
+
+    <td><b>u.nbc (log_std)</b></td>
+    <td id="u.nbc_log_std"></td>
+
+    <td><b>u.nbc_per_day (log_std)</b></td>
+    <td id="u.nbc_per_day_log_std"></td>
+
+    <td><b>u.tweet (log_std)</b></td>
+    <td id="u.tweet_log_std"></td>
+
+    <td><b>u.tweet_per_day (log_std)</b></td>
+    <td id="u.tweet_per_day_log_std"></td>
+  </tr>
+</table>
+
+<br>
+
+
+
+
+<table>
+  <tr>
+    <td><b>u.mention_interaction (sum_log)</b></td>
+    <td id="u.mention_interaction_sum_log"></td>
+
+    <td><b>u.mention_interaction_per_day (sum_log)</b></td>
+    <td id="u.mention_interaction_per_day_sum_log"></td>
+
+    <td><b>u.hashtag_interaction (sum_log)</b></td>
+    <td id="u.hashtag_interaction_sum_log"></td>
+
+    <td><b>u.hashtag_interaction_per_day (sum_log)</b></td>
+    <td id="u.hashtag_interaction_per_day_sum_log"></td>
+
+    <td><b>u.rt_interaction (sum_log)</b></td>
+    <td id="u.rt_interaction_sum_log"></td>
+
+    <td><b>u.rt_interaction_per_day (sum_log)</b></td>
+    <td id="u.rt_interaction_per_day_sum_log"></td>
+
+    <td><b>u.nbc_interaction (sum_log)</b></td>
+    <td id="u.nbc_interaction_sum_log"></td>
+
+    <td><b>u.nbc_interaction_per_day (sum_log)</b></td>
+    <td id="u.nbc_interaction_per_day_sum_log"></td>
+  </tr>
+
+  <tr>
+    <td><b>u.mention_interaction (log_sum)</b></td>
+    <td id="u.mention_interaction_sum_log"></td>
+
+    <td><b>u.mention_interaction_per_day (log_sum)</b></td>
+    <td id="u.mention_interaction_per_day_log_sum"></td>
+
+    <td><b>u.hashtag_interaction (log_sum)</b></td>
+    <td id="u.hashtag_interaction_log_sum"></td>
+
+    <td><b>u.hashtag_interaction_per_day (log_sum)</b></td>
+    <td id="u.hashtag_interaction_per_day_log_sum"></td>
+
+    <td><b>u.rt_interaction (log_sum)</b></td>
+    <td id="u.rt_interaction_log_sum"></td>
+
+    <td><b>u.rt_interaction_per_day (log_sum)</b></td>
+    <td id="u.rt_interaction_per_day_log_sum"></td>
+
+    <td><b>u.nbc_interaction (log_sum)</b></td>
+    <td id="u.rt_interaction_log_sum"></td>
+
+    <td><b>u.nbc_interaction_per_day (log_sum)</b></td>
+    <td id="u.rt_interaction_per_day_log_sum"></td>
+  </tr>
+
+  <tr>
+    <td><b>u.mention_interaction (mean_log)</b></td>
+    <td id="u.mention_interaction_mean_log"></td>
+
+    <td><b>u.mention_interaction_per_day (mean_log)</b></td>
+    <td id="u.mention_interaction_per_day_mean_log"></td>
+
+    <td><b>u.hashtag_interaction (mean_log)</b></td>
+    <td id="u.hashtag_interaction_mean_log"></td>
+
+    <td><b>u.hashtag_interaction_per_day (mean_log)</b></td>
+    <td id="u.hashtag_interaction_per_day_mean_log"></td>
+
+    <td><b>u.nbc_interaction (mean_log)</b></td>
+    <td id="u.nbc_interaction_mean_log"></td>
+
+    <td><b>u.nbc_interaction_per_day (mean_log)</b></td>
+    <td id="u.nbc_interaction_per_day_mean_log"></td>
+  </tr>
+
+  <tr>
+    <td><b>u.mention_interaction (log_mean)</b></td>
+    <td id="u.mention_interaction_log_mean"></td>
+
+    <td><b>u.mention_interaction_per_day (log_mean)</b></td>
+    <td id="u.mention_interaction_per_day_log_mean"></td>
+
+    <td><b>u.hashtag_interaction (log_mean)</b></td>
+    <td id="u.hashtag_interaction_log_mean"></td>
+
+    <td><b>u.hashtag_interaction_per_day (log_mean)</b></td>
+    <td id="u.hashtag_interaction_per_day_log_mean"></td>
+
+    <td><b>u.rt_interaction (log_mean)</b></td>
+    <td id="u.rt_interaction_log_mean"></td>
+
+    <td><b>u.rt_interaction_per_day (log_mean)</b></td>
+    <td id="u.rt_interaction_per_day_log_mean"></td>
+
+    <td><b>u.nbc_interaction (log_mean)</b></td>
+    <td id="u.nbc_interaction_log_mean"></td>
+
+    <td><b>u.nbc_interaction_per_day (log_mean)</b></td>
+    <td id="u.nbc_interaction_per_day_log_mean"></td>
+  </tr>
+
+  <tr>
+    <td><b>u.mention_interaction (std_log)</b></td>
+    <td id="u.mention_interaction_std_log"></td>
+
+    <td><b>u.mention_interaction_per_day (std_log)</b></td>
+    <td id="u.mention_interaction_per_day_std_log"></td>
+
+    <td><b>u.hashtag_interaction (std_log)</b></td>
+    <td id="u.hashtag_interaction_std_log"></td>
+
+    <td><b>u.hashtag_interaction_per_day (std_log)</b></td>
+    <td id="u.hashtag_interaction_per_day_std_log"></td>
+
+    <td><b>u.rt_interaction (std_log)</b></td>
+    <td id="u.rt_interaction_std_log"></td>
+
+    <td><b>u.rt_interaction_per_day (std_log)</b></td>
+    <td id="u.rt_interaction_per_day_std_log"></td>
+
+    td><b>u.nbc_interaction (std_log)</b></td>
+    <td id="u.nbc_interaction_std_log"></td>
+
+    <td><b>u.nbc_interaction_per_day (std_log)</b></td>
+    <td id="u.nbc_interaction_per_day_std_log"></td>
+  </tr>
+
+  <tr>
+    <td><b>u.mention_interaction (log_std)</b></td>
+    <td id="u.mention_interaction_log_std"></td>
+
+    <td><b>u.mention_interaction_per_day (log_std)</b></td>
+    <td id="u.mention_interaction_per_day_log_std"></td>
+
+    <td><b>u.hashtag_interaction (log_std)</b></td>
+    <td id="u.hashtag_interaction_log_std"></td>
+
+    <td><b>u.hashtag_interaction_per_day (log_std)</b></td>
+    <td id="u.hashtag_interaction_per_day_log_std"></td>
+
+    <td><b>u.rt_interaction (log_std)</b></td>
+    <td id="u.rt_interaction_log_std"></td>
+
+    <td><b>u.rt_interaction_per_day (log_std)</b></td>
+    <td id="u.rt_interaction_per_day_log_std"></td>
+
+    <td><b>u.nbc_interaction (log_std)</b></td>
+    <td id="u.nbc_interaction_log_std"></td>
+
+    <td><b>u.nbc_interaction_per_day (log_std)</b></td>
+    <td id="u.nbc_interaction_per_day_log_std"></td>
+  </tr>
+</table>
+
 <br>
 <br>
 
@@ -72,7 +441,9 @@ Feature Weights: <span id="weights"></span>
             alert('error!');
         },
         success : function(response) {
-            $('#weights').html(response.weights_map);
+            //$('#weights').html(response.weights_map);
+            show_weights(response.weights_map);
+
             $('#video_table').show();
             clear_videos();
 
@@ -90,6 +461,17 @@ Feature Weights: <span id="weights"></span>
       });
     });
   });
+
+  function show_weights(weights_map)
+  {
+    for (var key in weights_map) {
+      if (!weights_map.hasOwnProperty(key)) continue;
+
+      var td_id = '#' + key.replace(':', '_');
+
+      $(td_id).html(weights_map[key]);
+    }  
+  }
 
   function clear_videos()
   {
