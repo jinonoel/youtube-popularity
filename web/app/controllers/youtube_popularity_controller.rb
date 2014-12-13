@@ -293,7 +293,7 @@ class YoutubePopularityController < ApplicationController
       'status' => 'success',
       'top_videos' => top_videos[0, 100],
       'weights' => weights.inspect,
-      'weights_map' => weights_map.inspect
+      'weights_map' => weights_map
     }
   end
 end
