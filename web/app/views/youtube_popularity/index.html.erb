@@ -414,8 +414,9 @@ Feature Weights: <span id="weights"></span>
     <th id="dayA_col"></th>
     <th id="dayB_col"></th>
     <th>Score</th>
-    <th>Features</th>
-
+    <th>Video Features</th>
+    <th>Active User Features</th>
+    <th>User Interaction Features</th>
   </tr>
 </table>
 
@@ -503,6 +504,7 @@ Feature Weights: <span id="weights"></span>
         + 'v.nbc: ' + top_videos[i].feature_dot['v.nbc'] + '<br>'
         + 'v.tweet: ' + top_videos[i].feature_dot['v.tweet'] + '<br>'
         + 'v.a_views: ' + top_videos[i].feature_dot['v.a_views'] + '<br>'
+        + '</td><td>'
         + 'u.mention: ' + top_videos[i].feature_dot['u.mention'] + '<br>'
 	+ 'u.mention_per_day: ' + top_videos[i].feature_dot['u.mention_per_day'] + '<br>'
         + 'u.hashtag: ' + top_videos[i].feature_dot['u.hashtag'] + '<br>'
@@ -513,7 +515,7 @@ Feature Weights: <span id="weights"></span>
         + 'u.nbc_per_day: ' + top_videos[i].feature_dot['u.nbc_per_day'] + '<br>'
         + 'u.tweet: ' + top_videos[i].feature_dot['u.tweet'] + '<br>'
         + 'u.tweet_per_day: ' + top_videos[i].feature_dot['u.tweet_per_day'] + '<br>'
-
+        + '</td><td>'
         + 'u.mention_interaction: ' + top_videos[i].feature_dot['u.mention_interaction'] + '<br>'
 	+ 'u.mention_interaction_per_day: ' + top_videos[i].feature_dot['u.mention_interaction_per_day'] + '<br>'
         + 'u.hashtag_interaction: ' + top_videos[i].feature_dot['u.hashtag_interaction'] + '<br>'
