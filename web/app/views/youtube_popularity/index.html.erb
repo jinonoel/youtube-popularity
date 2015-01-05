@@ -428,6 +428,8 @@
     <th>Upload Date</th>
     <th id="dayA_col"></th>
     <th id="dayB_col"></th>
+    <th>Tweets / Day</th>
+    <th>Sample Tweets</th>
     <th>Score</th>
     <th>Video Features</th>
     <th>Active User Features</th>
@@ -499,6 +501,12 @@
   function show_videos(top_videos)
   {
     for (var i = 0; i < top_videos.length; i++) {
+      var sample_tweet_string = '';
+
+      for (var j = 0; j < top_videos[i].sample_tweets.length; j++) {
+        sample_tweet_string += '<b>@' + top_videos[i].sample_authors[j] + ':</b> ' + top_videos[i].sample_tweets[j] + '<br><br>';
+      }
+
       $('#video_table tr:last').after(
         '<tr class=\'data_row\'>'
 
@@ -513,6 +521,8 @@
 	//+ '<td>' + top_videos[i].score + '</td>'
         + '<td>' + top_videos[i].a_views + '</td>'
         + '<td>' + top_videos[i].b_views + '</td>'
+        + '<td>' + top_videos[i].average_tweets + '</td>'
+        + '<td>' + sample_tweet_string + '</td>'
 	+ '<td>' + top_videos[i].score + '</td>'
         + '<td>' 
         + 'v.mention: ' + top_videos[i].feature_dot['v.mention'] + '<br>'

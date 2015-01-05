@@ -39,7 +39,10 @@ class YoutubePopularityController < ApplicationController
         'b_count' => result['B_views'],
         'features' => result['features'].inspect,
         'features_arr' => result['normalized_features'],
-        'model_rank' => score_rank
+        'model_rank' => score_rank,
+        'sample_tweets' => result['sample_tweets'],
+        'sample_authors' => result['sample_authors'],
+        'average_tweets' => result['average_tweets']
       }
 
       score_rank += 1

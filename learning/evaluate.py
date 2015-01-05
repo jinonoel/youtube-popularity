@@ -516,7 +516,7 @@ def insert_predictions(data, features, active_features, baseline_file, date_0, d
     vid_coll = db['videos']
     w_coll = db['weights_' + date_A]
 
-    feat_coll = db['features_' + date_0]
+    feat_coll = db['features_' + date_0 + '_10']
     sample_tweets = {}
     for result in feat_coll.find():
         vid_id = result['_id']
@@ -528,9 +528,12 @@ def insert_predictions(data, features, active_features, baseline_file, date_0, d
 
         sample_tweets[vid_id] = {
             'tweets' : tweets,
-            'authors' : authors
+            'authors' : authors,
+            'average' : result['value']['tweet_count'] / float(10)
         }
     
+    print 'Videos with sample tweets:', len(sample_tweets)
+
     for line in open(baseline_file):
         tokens = line.strip().split(',')
         vid_id = tokens[0]
@@ -555,7 +558,8 @@ def insert_predictions(data, features, active_features, baseline_file, date_0, d
             'active_features' : active_features[vid_id],
             'sample_tweets' : sample_tweets[vid_id]['tweets'],
             'sample_authors' : sample_tweets[vid_id]['authors'],
-            'normalized_features' : normalized_test_features[vid_id]
+            'normalized_features' : normalized_test_features[vid_id],
+            'average_tweets' : sample_tweets[vid_id]['average']
         })
 
     pred_coll.ensure_index("A_views")
