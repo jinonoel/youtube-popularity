@@ -4,7 +4,7 @@ import sys
 import math
 import pymongo
 
-sys.path.append('/Users/jino/Code/liblinear-1.94/python')
+sys.path.append('/home/jnoel/liblinear-1.94/python')
 import liblinearutil
 
 C_RANGE = [
@@ -554,7 +554,8 @@ def insert_predictions(data, features, active_features, baseline_file, date_0, d
             'features' : features[vid_id],
             'active_features' : active_features[vid_id],
             'sample_tweets' : sample_tweets[vid_id]['tweets'],
-            'sample_authors' : sample_tweets[vid_id]['authors']
+            'sample_authors' : sample_tweets[vid_id]['authors'],
+            'normalized_features' : normalized_test_features[vid_id]
         })
 
     pred_coll.ensure_index("A_views")
