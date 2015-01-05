@@ -487,7 +487,7 @@ def cross_validate(data, features):
     print "Average Score", average_pr100 / 5
 
 
-def insert_predictions(data, features, active_features, baseline_file, date):
+def insert_predictions(data, features, active_features, baseline_file, date_0, date_A):
     folds = get_folds(data)
     test_data = folds[0]
     train_data = {}
@@ -512,10 +512,25 @@ def insert_predictions(data, features, active_features, baseline_file, date):
     print "Insert"
     conn = pymongo.MongoClient('localhost')
     db = conn['nicta']
-    pred_coll = db['predictions_' + date]
+    pred_coll = db['predictions_' + date_A]
     vid_coll = db['videos']
-    w_coll = db['weights_' + date]
+    w_coll = db['weights_' + date_A]
 
+    feat_coll = db['features_' + date_0]
+    sample_tweets = {}
+    for result in feat_coll.find():
+        vid_id = result['_id']
+        if vid_id not in predictions:
+            continue
+
+        tweets = result['value']['sample_tweets']
+        authors = result['value']['sample_authors']
+
+        sample_tweets[vid_id] = {
+            'tweets' : tweets,
+            'authors' : authors
+        }
+    
     for line in open(baseline_file):
         tokens = line.strip().split(',')
         vid_id = tokens[0]
@@ -537,7 +552,9 @@ def insert_predictions(data, features, active_features, baseline_file, date):
             'B_views' : test_data[vid_id]['views'],
             'A_views' : test_data[vid_id]['train_views'],
             'features' : features[vid_id],
-            'active_features' : active_features[vid_id]
+            'active_features' : active_features[vid_id],
+            'sample_tweets' : sample_tweets[vid_id]['tweets'],
+            'sample_authors' : sample_tweets[vid_id]['authors']
         })
 
     pred_coll.ensure_index("A_views")
@@ -568,7 +585,8 @@ if __name__ == "__main__":
     parser.add_argument('feature_file')
     parser.add_argument('baseline_file')
     parser.add_argument('user_features_file')
-    parser.add_argument('date')
+    parser.add_argument('date_0')
+    parser.add_argument('date_A')
     args = parser.parse_args()
 
     data = read_data(args.data_file)
@@ -585,4 +603,4 @@ if __name__ == "__main__":
     if args.action == 'cross_validate':
         cross_validate(data, features)
     elif args.action == 'insert':
-        insert_predictions(data, features, active_features, args.baseline_file, args.date)
+        insert_predictions(data, features, active_features, args.baseline_file, args.date_0, args.date_A)
