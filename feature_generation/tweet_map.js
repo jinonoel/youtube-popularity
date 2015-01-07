@@ -80,6 +80,7 @@ function() {
 		is_nbc : isNBC,
                 tweet_count : 1,
 		sample_tweets : tweets,
+                all_tweets : tweets,
 		authors : authors,
 		sample_authors : authors
 	    };

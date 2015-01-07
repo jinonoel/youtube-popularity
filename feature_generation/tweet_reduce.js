@@ -7,6 +7,7 @@ function(key, values) {
 	tweet_count : 0,
 	sample_tweets : [],
 	sample_authors : [],
+        all_tweets : [],
 	authors : []
     }
    
@@ -22,9 +23,15 @@ function(key, values) {
 		tweetData.sample_tweets.push(values[i].sample_tweets[j]);
 		tweetData.sample_authors.push(values[i].sample_authors[j]);
 	    }
-
-	    tweetData.authors.push(values[i].authors[j]);
 	}
+
+        for (var j = 0; j < values[i].authors.length; j++) {
+	    tweetData.authors.push(values[i].authors[j]);
+        }
+
+        for (var j = 0; j < values[i].all_tweets.length; j++) {
+            tweetData.all_tweets.push(values[i].all_tweets[j]);
+        }
     }
     
     return tweetData;
