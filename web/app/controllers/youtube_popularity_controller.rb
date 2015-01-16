@@ -10,6 +10,7 @@ class YoutubePopularityController < ApplicationController
   def doAction
     upload_date = params['upload_date']
     threshold = params['threshold'].to_i
+    sort_by = params["sort_by"]
 
     filter = {}
     if threshold > 0
@@ -290,6 +291,17 @@ class YoutubePopularityController < ApplicationController
       end
 
       v['feature_dot'] = feature_dot
+    end
+
+    if sort_by != "model_rank"
+      new_top_videos = []
+      top_videos.each.sort{|a,b|
+        a['feature_dot'][sort_by] <=> b['feature_dot'][sort_by]
+      } do |v|
+        new_top_videos << v
+      end
+
+      top_videos = new_top_videos
     end
 
     render json: {

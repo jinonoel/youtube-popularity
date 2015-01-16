@@ -18,6 +18,35 @@
 
   Threshold:
   <input type="input" id="threshold">
+  &nbsp;&nbsp;
+  Sort By:
+  <select id="sort_by">
+    <option value="model_rank">model_rank</option>
+    <option value="v.mention">v.mention</option>
+    <option value="v.hashtag">v.hashtag</option>
+    <option value="v.rt">v.rt</option>
+    <option value="v.nbc">v.nbc</option>
+    <option value="v.tweet">v.tweet</option>
+    <option value="v.a_views">v.a_views</option>
+    <option value="u.mention">u.mention</option>
+    <option value="u.mention_per_day">u.mention_per_day</option>
+    <option value="u.hashtag">u.hashtag</option>
+    <option value="u.hashtag_per_day">u.hashtag_per_day</option>
+    <option value="u.rt">u.rt</option>
+    <option value="u.rt_per_day">u.rt_per_day</option>
+    <option value="u.nbc">u.nbc</option>
+    <option value="u.nbc_per_day">u.nbc_per_day</option>
+    <option value="u.tweet">u.tweet</option>
+    <option value="u.tweet_per_day">u.tweet_per_day</option>
+    <option value="u.mention_interaction">u.mention_interaction</option>
+    <option value="u.mention_interaction_per_day">u.mention_interaction_per_day</option>
+    <option value="u.hashtag_interaction">u.hashtag_interaction</option>
+    <option value="u.hashtag_interaction_per_day">u.hashtag_interaction_per_day</option>
+    <option value="u.rt_interaction">u.rt_interaction</option>
+    <option value="u.rt_interaction_per_day">u.rt_interaction_per_day</option>
+    <option value="u.nbc_interaction">u.nbc_interaction</option>
+    <option value="u.nbc_interaction_per_day">u.nbc_interaction_per_day</option>
+  </select>
   <br>
 
   <div id="buttons">
@@ -453,7 +482,8 @@
         url : 'youtube_popularity/doAction',
         data : {
           upload_date : $('#upload_date').val(),
-          threshold: $('#threshold').val()
+          threshold: $('#threshold').val(),
+          sort_by: $('#sort_by').val()
         },
         error : function() {
             alert('error!');
