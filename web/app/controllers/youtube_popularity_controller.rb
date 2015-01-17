@@ -295,15 +295,13 @@ class YoutubePopularityController < ApplicationController
 
     if sort_by != "model_rank"
       new_top_videos = []
-      top_videos.each.sort{|a,b|
-        a['feature_dot'][sort_by] <=> b['feature_dot'][sort_by]
-      } do |v|
+      top_videos.sort{|a,b| a['feature_dot'][sort_by] <=> b['feature_dot'][sort_by]}.each do |v|
         new_top_videos << v
       end
-
+      
       top_videos = new_top_videos
     end
-
+    
     render json: {
       'status' => 'success',
       'top_videos' => top_videos[0, 100],
