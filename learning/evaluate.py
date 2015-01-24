@@ -3,6 +3,7 @@ import argparse
 import sys
 import math
 import pymongo
+import zlip
 
 sys.path.append('/home/jnoel/liblinear-1.94/python')
 import liblinearutil
@@ -518,18 +519,32 @@ def insert_predictions(data, features, active_features, baseline_file, date_0, d
 
     feat_coll = db['features_' + date_0 + '_10']
     sample_tweets = {}
+    print 'Getting features'
+    feat_idx = 0
     for result in feat_coll.find():
+        feat_idx += 1
+        if feat_ids % 10000 == 0:
+            continue
         vid_id = result['_id']
         if vid_id not in predictions:
             continue
 
         tweets = result['value']['sample_tweets']
         authors = result['value']['sample_authors']
+        all_tweets = result['value']['all_tweets']
+
+        text_concat = ""
+        for tweet_id in all_tweets:
+            twt = db['tweet'].find_one({'_id' : tweet_id}, ['text'])
+            text_concat += twt['text']
+
+        compressed = zlib.compress(text_concat)
 
         sample_tweets[vid_id] = {
             'tweets' : tweets,
             'authors' : authors,
-            'average' : result['value']['tweet_count'] / float(10)
+            'average' : result['value']['tweet_count'] / float(10),
+            'compressed' : len(compressed)
         }
     
     print 'Videos with sample tweets:', len(sample_tweets)
@@ -545,6 +560,7 @@ def insert_predictions(data, features, active_features, baseline_file, date_0, d
         test_data[vid_id]['train_views'] = A_score
 
 
+    print 'Inserting'
     pred_coll.drop()
     for vid_id in predictions:
         pred_coll.insert({
@@ -555,6 +571,7 @@ def insert_predictions(data, features, active_features, baseline_file, date_0, d
             'B_views' : test_data[vid_id]['views'],
             'A_views' : test_data[vid_id]['train_views'],
             'features' : features[vid_id],
+            'diversity' : sample_tweets[vid_id]['compressed'],
             'active_features' : active_features[vid_id],
             'sample_tweets' : sample_tweets[vid_id]['tweets'],
             'sample_authors' : sample_tweets[vid_id]['authors'],
@@ -578,8 +595,7 @@ def insert_predictions(data, features, active_features, baseline_file, date_0, d
 
     w_coll.remove()
     w_coll.insert({'weights' : weights})
-            
-        
+
     conn.close()
     print "Done"
 
