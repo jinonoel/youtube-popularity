@@ -43,7 +43,8 @@ class YoutubePopularityController < ApplicationController
         'model_rank' => score_rank,
         'sample_tweets' => result['sample_tweets'],
         'sample_authors' => result['sample_authors'],
-        'average_tweets' => result['average_tweets']
+        'average_tweets' => result['average_tweets'],
+        'diversity' => result['diversity']
       }
 
       score_rank += 1
