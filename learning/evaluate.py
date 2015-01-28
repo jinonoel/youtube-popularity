@@ -3,7 +3,7 @@ import argparse
 import sys
 import math
 import pymongo
-import zlip
+import zlib
 
 sys.path.append('/home/jnoel/liblinear-1.94/python')
 import liblinearutil
@@ -523,8 +523,9 @@ def insert_predictions(data, features, active_features, baseline_file, date_0, d
     feat_idx = 0
     for result in feat_coll.find():
         feat_idx += 1
-        if feat_ids % 10000 == 0:
-            continue
+        if feat_idx % 10000 == 0:
+            print feat_idx, len(sample_tweets)
+
         vid_id = result['_id']
         if vid_id not in predictions:
             continue
@@ -534,11 +535,10 @@ def insert_predictions(data, features, active_features, baseline_file, date_0, d
         all_tweets = result['value']['all_tweets']
 
         text_concat = ""
-        for tweet_id in all_tweets:
-            twt = db['tweet'].find_one({'_id' : tweet_id}, ['text'])
+        for twt in db['tweet'].find({'_id': {'$in' : all_tweets}}, ['text']):
             text_concat += twt['text']
 
-        compressed = zlib.compress(text_concat)
+        compressed = zlib.compress(text_concat.encode('utf8'))
 
         sample_tweets[vid_id] = {
             'tweets' : tweets,
@@ -546,7 +546,7 @@ def insert_predictions(data, features, active_features, baseline_file, date_0, d
             'average' : result['value']['tweet_count'] / float(10),
             'compressed' : len(compressed)
         }
-    
+
     print 'Videos with sample tweets:', len(sample_tweets)
 
     for line in open(baseline_file):
@@ -563,6 +563,9 @@ def insert_predictions(data, features, active_features, baseline_file, date_0, d
     print 'Inserting'
     pred_coll.drop()
     for vid_id in predictions:
+        if vid_id not in sample_tweets:
+            continue
+
         pred_coll.insert({
             'id' : vid_id,
             'score' : predictions[vid_id]['score'],

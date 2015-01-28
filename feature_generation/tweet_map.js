@@ -68,6 +68,8 @@ function() {
 	if (key != '') {
 	    tweets = [];
 	    tweets.push(this.text);
+            all_tweets = [];
+            all_tweets.push(this._id);
 	    authors = [];
 	    sample_authors = [];
 	    authors.push(this.user.screen_name);
@@ -80,7 +82,7 @@ function() {
 		is_nbc : isNBC,
                 tweet_count : 1,
 		sample_tweets : tweets,
-                all_tweets : tweets,
+                all_tweets : all_tweets,
 		authors : authors,
 		sample_authors : authors
 	    };

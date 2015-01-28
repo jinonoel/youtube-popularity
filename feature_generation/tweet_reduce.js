@@ -26,11 +26,15 @@ function(key, values) {
 	}
 
         for (var j = 0; j < values[i].authors.length; j++) {
-	    tweetData.authors.push(values[i].authors[j]);
+	    if (tweetData.authors.length < 1000) {
+		tweetData.authors.push(values[i].authors[j]);
+	    }
         }
 
         for (var j = 0; j < values[i].all_tweets.length; j++) {
-            tweetData.all_tweets.push(values[i].all_tweets[j]);
+            if (tweetData.all_tweets.length < 1000) {
+		tweetData.all_tweets.push(values[i].all_tweets[j]);
+	    }
         }
     }
     
